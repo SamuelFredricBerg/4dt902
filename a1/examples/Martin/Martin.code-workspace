@@ -22,8 +22,8 @@
                     "type": "antlr-debug",
                     "request": "launch",
                     "name": "Debug Martin",
-                    "grammar": "/home/fred/Documents/4dt902/a1/examples/Martin/Testing.g4",
-                    "input": "/home/fred/Documents/4dt902/a1/examples/Martin/inputs/arithmetic.ofp",
+                    "grammar": "/home/fred/Documents/4dt902/a1/examples/Martin/Martin.g4",
+                    "input": "/home/fred/Documents/4dt902/a1/examples/Martin/inputs/strings.ofp",
                     "visualParseTree": true
                 }
             ]
