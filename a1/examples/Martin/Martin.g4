@@ -9,7 +9,7 @@ grammar Martin;
 // ----------------------------
 
 start
-    : main+ function* EOF
+    : (function | main)* EOF
     ;
 
 main
@@ -17,7 +17,7 @@ main
     ;
 
 function
-    : TYPE ID '(' (functionInput (',' functionInput)*)? ')' '{' stmt* '}'
+    : returnType ID '(' (functionInput (',' functionInput)*)? ')' '{' stmt* '}'
     ;
 
 functionInput
@@ -31,7 +31,7 @@ stmt
     | decl
     | ifAndElseStatements
     | whileStatement
-    | callFunction
+    | callFunction ';'
     | returnStatement
     ;
 
@@ -56,7 +56,7 @@ ifAndElseStatements
     ;
 
 callFunction
-    : ID '(' (expr (',' expr)*)? ')' ';'
+    : ID '(' (expr (',' expr)*)? ')'
     ;
 
 // ----------------------------
@@ -101,6 +101,11 @@ TYPE
     | 'char' '[]'?
     ;
 
+returnType
+    : TYPE
+    | 'void'
+    ;
+
 FLOAT
     : [0-9]+ '.' [0-9]+
     ;
@@ -110,7 +115,7 @@ INT
     ;
 
 ID
-    : [a-zA-Z]+
+    : [a-zA-Z][a-zA-Z0-9]*
     ;
 
 BOOLEAN
@@ -118,11 +123,11 @@ BOOLEAN
     ;
 
 STRING
-    : '"' [a-zA-Z0-9!.,?=:() ]* '"'
+    : '"' (~["\\\r\n])* '"'
     ;
 
 CHAR
-    : '\'' [a-zA-Z0-9!.,?=:()] '\''
+    : '\'' (~['\\\r\n]) '\''
     ;
 
 // ----------------------------
