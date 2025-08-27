@@ -10,7 +10,7 @@
             "visualParseTreeClustered": false
         },
         "antlr4.generation": {
-            "outputDir": "/home/fred/Documents/4dt902/a1//generated",
+            "outputDir": "/home/fred/Documents/4dt902/a1/generated",
             "mode": "external",
             "language": "Java",
             "listeners": true,
