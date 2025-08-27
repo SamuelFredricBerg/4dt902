@@ -13,4 +13,8 @@ expr : expr '*' expr
 	 ;
 
 INT	:	('0'..'9')+ ;
-WS	:	[ \t\r\n]+ -> skip ;
+
+WS : [ \t\r\n]+ -> skip;
+COMMENT : '# '~( '\r' | '\n' )* -> skip;
+COMMENTFull: '/' .? '/' -> skip;
+LINE_COMMENT: '//' ~[\r\n] -> skip;
