@@ -9,7 +9,7 @@ grammar A1;
 // ----------------------------
 
 start
-    : (function | main)* EOF
+    : (function*  main function*) EOF
     ;
 
 main
