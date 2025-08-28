@@ -10,7 +10,7 @@
             "visualParseTreeClustered": false
         },
         "antlr4.generation": {
-            "outputDir": "/home/fred/Documents/4dt902/a1/examples/PlusMult/generated",
+            "outputDir": "G:\\4dt902\\a1\\examples\\Martin\\generated",
             "mode": "external",
             "language": "Java",
             "listeners": true,
@@ -21,17 +21,17 @@
                 {
                     "type": "antlr-debug",
                     "request": "launch",
-                    "name": "Debug PlusMult",
-                    "grammar": "/home/fred/Documents/4dt902/a1/examples/PlusMult/PlusMult.g4",
-                    "input": "/home/fred/Documents/4dt902/a1/examples/PlusMult/input.txt",
+                    "name": "Debug Martin",
+                    "grammar": "G:\\4dt902\\a1\\examples\\Martin\\Martin.g4",
+                    "input": "G:\\4dt902\\a1\\examples\\Martin\\inputs\\arithmetic.ofp",
                     "visualParseTree": true
                 }
             ]
         },
         "java.project.referencedLibraries": [
-            "/home/fred/Documents/jars/antlr4-4.13.1.jar",
-            "/home/fred/Documents/jars/antlr4-runtime-4.13.1.jar",
-            "/home/fred/Documents/jars/org.abego.treelayout.core-1.0.3.jar"
+            "G:\\jars\\antlr4-4.13.1.jar",
+            "G:\\jars\\antlr4-runtime-4.13.1.jar",
+            "G:\\jars\\org.abego.treelayout.core-1.0.3.jar"
         ]
     }
 }
