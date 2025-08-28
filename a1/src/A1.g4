@@ -40,8 +40,8 @@ block
     ;
 
 blockOrStmt
-    : block
-    | stmt
+    : (block
+    | stmt)
     ;
 
 assign
@@ -61,9 +61,9 @@ whileStatement
     ;
 
 ifAndElseStatements
-    : 'if' '(' expr ')' ( blockOrStmt )
-    ('else' 'if' '(' expr ')' ( blockOrStmt ))*
-    ('else' ( blockOrStmt ))?
+    : 'if' '(' expr ')' blockOrStmt
+    ('else' 'if' '(' expr ')' blockOrStmt)*
+    ('else' blockOrStmt)?
     ;
 
 callFunction
