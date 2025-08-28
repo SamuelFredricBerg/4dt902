@@ -116,7 +116,7 @@ INT
     ;
 
 ID
-    : [a-zA-Z][a-zA-Z0-9]*
+    : [a-zA-Z]+
     ;
 
 BOOLEAN
@@ -124,7 +124,7 @@ BOOLEAN
     ;
 
 STRING
-    : '"' (~["\\\r\n])* '"'
+    : '"' ( [a-zA-Z!.?,=:() ] )* '"'
     ;
 
 CHAR
