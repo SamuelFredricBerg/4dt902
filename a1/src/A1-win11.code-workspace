@@ -23,7 +23,7 @@
                     "request": "launch",
                     "name": "Debug A1",
                     "grammar": "G:\\4dt902\\a1\\src\\A1.g4",
-                    "input": "G:\\4dt902\\a1\\src\\inputs\\boolean.ofp",
+                    "input": "G:\\4dt902\\a1\\src\\inputs\\strings.ofp",
                     "visualParseTree": true
                 }
             ]

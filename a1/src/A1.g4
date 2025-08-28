@@ -149,5 +149,5 @@ BLOCK_COMMENT
     ;
 
 COMMENT
-    : '# '~( '\r' | '\n' )* -> skip
+    : '#'~( '\r' | '\n' )* -> skip
     ;
