@@ -96,10 +96,10 @@ newArray
 
 TYPE
     : 'int' '[]'?
-    | 'bool'
-    | 'string'
     | 'float' '[]'?
     | 'char' '[]'?
+    | 'bool'
+    | 'string'
     ;
 
 returnType
