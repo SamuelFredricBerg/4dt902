@@ -13,11 +13,11 @@ start
     ;
 
 main
-    : 'void' 'main' '(' ')' '{' stmt* '}'
+    : 'void' 'main' '(' ')' block
     ;
 
 function
-    : returnType ID '(' (functionInput (',' functionInput)*)? ')' '{' stmt* '}'
+    : returnType ID '(' (functionInput (',' functionInput)*)? ')' block
     ;
 
 functionInput
@@ -35,6 +35,15 @@ stmt
     | returnStatement
     ;
 
+block
+    : '{' stmt* '}'
+    ;
+
+blockOrStmt
+    : block
+    | stmt
+    ;
+
 assign
     : ID ('[' expr ']')? '=' expr ';'
     ;
@@ -48,13 +57,13 @@ returnStatement
     ;
 
 whileStatement
-    : 'while' '(' expr ')' '{' stmt* '}'
+    : 'while' '(' expr ')' block
     ;
 
 ifAndElseStatements
-    : 'if' '(' expr ')' ( '{' stmt* '}' | stmt )
-    ('else' 'if' '(' expr ')' ('{' stmt* '}' | stmt ))*
-    ('else' ( '{' stmt* '}' | stmt ))?
+    : 'if' '(' expr ')' ( blockOrStmt )
+    ('else' 'if' '(' expr ')' ( blockOrStmt ))*
+    ('else' ( blockOrStmt ))?
     ;
 
 callFunction
