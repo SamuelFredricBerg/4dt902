@@ -1,151 +1,120 @@
+/**
+
+Define a grammar called Expressions*/
 grammar Martin;
 
 @header {
+    // Define name of package for generated Java files.
     package generated;
 }
 
-// ----------------------------
-// Parser Rules
-// ----------------------------
-
-start
-    : (function | main)* EOF
-    ;
+// Syntax Specification ==> Context-free Grammar
+start :  function* main+ function;
 
 main
-    : 'void' 'main' '(' ')' '{' stmt* '}'
+    : 'void' 'main' '(' ')' '{' stmt '}'
     ;
 
 function
-    : returnType ID '(' (functionInput (',' functionInput)*)? ')' '{' stmt* '}'
+    : TYPE  ID '(' ((functionInput ',')* functionInput)? ')' '{' stmt* '}'
     ;
 
+callFunction
+    : ID '(' (expr ',')* (expr)? ')' ';'?
+    ;
 functionInput
     : TYPE ID
     ;
 
 stmt
-    : 'println' '(' expr ')' ';'
-    | 'print' '(' expr ')' ';'
+    : 'println'  '(' expr ')' ';'
+    |'print' '(' expr ')' ';'
     | assign
     | decl
-    | ifAndElseStatements
-    | whileStatement
-    | callFunction ';'
-    | returnStatement
+    | ifAndElseStatments
+    | whileStatment
+    | callFunction
+    | return
+    ;
+
+expr
+    : '(' expr ')'
+    | expr ('' | '/') expr
+    | expr ('+' | '-') expr
+    | expr ('<' | '>' | '==') expr
+    | '-' expr
+    | expr ('.length')
+    | expr ('[' expr ']')
+    | '{' ((expr ',') expr)? '}'
+    | newArray
+    | callFunction
+    | (BOOLEAN | INT | ID | STRING | FLOAT | CHAR)
+    ;
+
+whileStatment
+    : 'while' ('(' expr ')' '{' stmt* '}')
+    ;
+
+ifAndElseStatments
+    : ('if') '(' expr ')' ('{' stmt* '}'
+    | stmt) ('else'  ('{' stmt* '}' | stmt) )?
+    ;
+
+newArray
+    : ( 'new' TYPE '[' (expr) ']')
     ;
 
 assign
-    : ID ('[' expr ']')? '=' expr ';'
+    : ID ('[' expr ']')?  '=' expr ';'
     ;
 
 decl
-    : TYPE ID ('=' expr)? ';'
+    : TYPE  ID ('=' expr)?  ';'
     ;
 
-returnStatement
-    : 'return' expr? ';'
+return
+    : 'return' (expr)? ';'
     ;
 
-whileStatement
-    : 'while' '(' expr ')' '{' stmt* '}'
-    ;
-
-ifAndElseStatements
-    : 'if' '(' expr ')' ( '{' stmt* '}' | stmt ) ('else' ( '{' stmt* '}' | stmt ))?
-    ;
-
-callFunction
-    : ID '(' (expr (',' expr)*)? ')'
-    ;
-
-// ----------------------------
-// Expression Rules with Precedence
-// ----------------------------
-
-expr
-    : expr ('<' | '>' | '==') expr      # CompareExpr
-    | expr ('+' | '-') expr             # AddSubExpr
-    | expr ('*' | '/') expr             # MulDivExpr
-    | '-' expr                          # NegateExpr
-    | expr '.' 'length'                 # ArrayLengthExpr
-    | expr '[' expr ']'                 # ArrayAccessExpr
-    | '(' expr ')'                      # ParensExpr
-    | '{' (expr (',' expr)*)? '}'       # ArrayLiteralExpr
-    | newArray                          # NewArrayExpr
-    | callFunction                      # FunctionCallExpr
-    | BOOLEAN                           # BooleanLiteralExpr
-    | INT                               # IntLiteralExpr
-    | FLOAT                             # FloatLiteralExpr
-    | STRING                            # StringLiteralExpr
-    | CHAR                              # CharLiteralExpr
-    | ID                                # IdentifierExpr
-    ;
-
-// ----------------------------
-// Array Creation
-// ----------------------------
-newArray
-    : 'new' TYPE '[' expr ']'
-    ;
-
-// ----------------------------
-// Lexer Rules
-// ----------------------------
-
+// Lexer Specification ==> Regular Expressions
 TYPE
-    : 'int' '[]'?
+    : ('int'
+    | 'int[]'
     | 'bool'
     | 'string'
-    | 'float' '[]'?
-    | 'char' '[]'?
+    | 'float'
+    | 'float[]'
+    | 'char'
+    | 'char[]')
     ;
-
-returnType
-    : TYPE
-    | 'void'
-    ;
-
 FLOAT
-    : [0-9]+ '.' [0-9]+
+    : ('0' | (('1'..'9') ('0'..'9'))) '.' ('0'..'9')+
     ;
-
 INT
-    : '0' | [1-9][0-9]*
+    : '0' | ('1' ..'9') ('0' ..'9')
     ;
-
 ID
-    : [a-zA-Z][a-zA-Z0-9]*
+    : (('a'..'z') | ('A'..'Z'))+
     ;
-
 BOOLEAN
-    : 'true' | 'false'
+    : ('true' | 'false')
     ;
-
 STRING
-    : '"' (~["\\\r\n])* '"'
+    : '"' [a-zA-Z!.,?=:() ]* '"'
     ;
-
 CHAR
-    : '\'' (~['\\\r\n]) '\''
+    : ''' [a-zA-Z!.,?=:()] '''
     ;
-
-// ----------------------------
-// Comments and Whitespace
-// ----------------------------
 
 WS
     : [ \t\r\n]+ -> skip
     ;
-
-LINE_COMMENT
-    : '//' ~[\r\n]* -> skip
-    ;
-
-BLOCK_COMMENT
-    : '/*' .*? '*/' -> skip
-    ;
-
 COMMENT
     : '# '~( '\r' | '\n' )* -> skip
+    ;
+COMMENTFull
+    : '/' .? '/' -> skip
+    ;
+LINE_COMMENT
+    : '//' ~[\r\n] -> skip
     ;
