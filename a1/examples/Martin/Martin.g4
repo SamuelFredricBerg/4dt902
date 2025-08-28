@@ -48,7 +48,12 @@ expr
     | '{' ((expr ',') expr)? '}'
     | newArray
     | callFunction
-    | (BOOLEAN | INT | ID | STRING | FLOAT | CHAR)
+    | (BOOLEAN
+    | INT
+    | ID
+    | STRING
+    | FLOAT
+    | CHAR)
     ;
 
 whileStatment
