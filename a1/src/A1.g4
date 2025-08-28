@@ -66,22 +66,33 @@ callFunction
 // ----------------------------
 
 expr
-    : expr ('<' | '>' | '==') expr      # CompareExpr
-    | expr ('+' | '-') expr             # AddSubExpr
-    | expr ('*' | '/') expr             # MulDivExpr
-    | '-' expr                          # NegateExpr
-    | expr '.' 'length'                 # ArrayLengthExpr
-    | expr '[' expr ']'                 # ArrayAccessExpr
-    | '(' expr ')'                      # ParensExpr
-    | '{' (expr (',' expr)*)? '}'       # ArrayLiteralExpr
-    | newArray                          # NewArrayExpr
-    | callFunction                      # FunctionCallExpr
-    | BOOLEAN                           # BooleanLiteralExpr
-    | INT                               # IntLiteralExpr
-    | FLOAT                             # FloatLiteralExpr
-    | STRING                            # StringLiteralExpr
-    | CHAR                              # CharLiteralExpr
-    | ID                                # IdentifierExpr
+    : '{' (expr (',' expr)*)? '}'                                                                       # ArrayLiteralExpr
+    | expr '[' expr ']'                                                                                 # ArrayAccessExpr
+    | expr '.' 'length'                                                                                 # ArrayLengthExpr
+    | '(' expr ')'                                                                                      # ParensExpr
+    | expr ('++' | '--')                                                                                # PostFixExpr
+    | ('++' | '--' | '+' | '-') expr                                                                    # UnaryExpr
+    | ('~' | '!') expr                                                                                  # UnaryNotExpr
+    | expr ('*' | '/' | '%') expr                                                                       # MultiplicativeExpr
+    | expr ('+' | '-') expr                                                                             # AdditiveExpr
+    | expr ('<<' | '>>' | '>>>') expr                                                                   # ShiftExpr
+    | expr ('<' | '>' | '<=' | '>=') expr                                                               # RelationalExpr
+    | expr ('==' | '!=') expr                                                                           # EqualityExpr
+    | expr '&' expr                                                                                     # AndExpr
+    | expr '^' expr                                                                                     # XorExpr
+    | expr '|' expr                                                                                     # OrExpr
+    | expr '&&' expr                                                                                    # LogicalAndExpr
+    | expr '||' expr                                                                                    # LogicalOrExpr
+    | expr '?' expr ':' expr                                                                            # TernaryExpr
+    | expr ('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '>>>=') expr  # AssignmentExpr
+    | newArray                                                                                          # NewArrayExpr
+    | callFunction                                                                                      # FunctionCallExpr
+    | BOOLEAN                                                                                           # BooleanLiteralExpr
+    | INT                                                                                               # IntLiteralExpr
+    | FLOAT                                                                                             # FloatLiteralExpr
+    | STRING                                                                                            # StringLiteralExpr
+    | CHAR                                                                                              # CharLiteralExpr
+    | ID                                                                                                # IdentifierExpr
     ;
 
 // ----------------------------

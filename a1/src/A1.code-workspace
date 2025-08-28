@@ -7,7 +7,7 @@
     "settings": {
         "antlr4.debug": {
             "visualParseTreeHorizontal": true,
-            "visualParseTreeClustered": true
+            "visualParseTreeClustered": false
         },
         "antlr4.generation": {
             "outputDir": "/home/fred/Documents/4dt902/a1/src/generated",
