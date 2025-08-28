@@ -1,6 +1,3 @@
-/**
-
-Define a grammar called Expressions*/
 grammar Martin;
 
 @header {
@@ -28,7 +25,7 @@ functionInput
 
 stmt
     : 'println'  '(' expr ')' ';'
-    |'print' '(' expr ')' ';'
+    | 'print' '(' expr ')' ';'
     | assign
     | decl
     | ifAndElseStatments
@@ -39,7 +36,7 @@ stmt
 
 expr
     : '(' expr ')'
-    | expr ('' | '/') expr
+    | expr ('*' | '/') expr
     | expr ('+' | '-') expr
     | expr ('<' | '>' | '==') expr
     | '-' expr
@@ -61,8 +58,8 @@ whileStatment
     ;
 
 ifAndElseStatments
-    : ('if') '(' expr ')' ('{' stmt* '}'
-    | stmt) ('else'  ('{' stmt* '}' | stmt) )?
+    : ('if') '(' expr ')' ('{' stmt* '}' | stmt)
+    ('else'  ('{' stmt* '}' | stmt) )?
     ;
 
 newArray

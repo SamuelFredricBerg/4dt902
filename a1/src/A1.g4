@@ -52,7 +52,9 @@ whileStatement
     ;
 
 ifAndElseStatements
-    : 'if' '(' expr ')' ( '{' stmt* '}' | stmt ) ('else' ( '{' stmt* '}' | stmt ))?
+    : 'if' '(' expr ')' ( '{' stmt* '}' | stmt )
+    ('else' 'if' '(' expr ')' ('{' stmt* '}' | stmt ))*
+    ('else' ( '{' stmt* '}' | stmt ))?
     ;
 
 callFunction
