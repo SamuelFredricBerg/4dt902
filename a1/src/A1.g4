@@ -45,7 +45,11 @@ blockOrStmt
     ;
 
 assign
-    : ID ('[' expr ']')? '=' expr ';'   //TODO: Think this is worng logically with the current grammer of expr
+    : ID ('[' expr ']')? assignOp expr ';'   //TODO: Think this is worng logically with the current grammer of expr
+    ;
+
+assignOp
+    : ('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '>>>=') //? Is this functional implementation of assinOps and expr priority?
     ;
 
 decl
@@ -75,32 +79,32 @@ callFunc
 // ----------------------------
 
 expr
-    : '{' (expr (',' expr)*)? '}'                                                                       # ArrayLiteralExpr
-    | expr '[' expr ']'                                                                                 # ArrayAccessExpr
-    | expr '.' 'length'                                                                                 # ArrayLengthExpr
-    | '(' expr ')'                                                                                      # ParensExpr
-    | expr ('++' | '--')                                                                                # PostFixExpr
-    | ('++' | '--' | '+' | '-' | '~' | '!') expr                                                        # UnaryExpr
-    | expr ('*' | '/' | '%') expr                                                                       # MultiplicativeExpr
-    | expr ('+' | '-') expr                                                                             # AdditiveExpr
-    | expr ('<<' | '>>' | '>>>') expr                                                                   # ShiftExpr
-    | expr ('<' | '>' | '<=' | '>=') expr                                                               # RelationalExpr
-    | expr ('==' | '!=') expr                                                                           # EqualityExpr
-    | expr '&' expr                                                                                     # AndExpr
-    | expr '^' expr                                                                                     # XorExpr
-    | expr '|' expr                                                                                     # OrExpr
-    | expr '&&' expr                                                                                    # LogicalAndExpr
-    | expr '||' expr                                                                                    # LogicalOrExpr
-    | expr '?' expr ':' expr                                                                            # TernaryExpr
-    | expr ('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '>>>=') expr  # AssignmentExpr
-    | newArray                                                                                          # NewArrayExpr
-    | callFunc                                                                                          # FunctionCallExpr
-    | BOOLEAN                                                                                           # BooleanLiteralExpr
-    | INT                                                                                               # IntLiteralExpr
-    | FLOAT                                                                                             # FloatLiteralExpr
-    | STRING                                                                                            # StringLiteralExpr
-    | CHAR                                                                                              # CharLiteralExpr
-    | ID                                                                                                # IdentifierExpr
+    : '{' (expr (',' expr)*)? '}'                   # ArrayLiteralExpr
+    | expr '[' expr ']'                             # ArrayAccessExpr
+    | expr '.' 'length'                             # ArrayLengthExpr
+    | '(' expr ')'                                  # ParensExpr
+    | expr ('++' | '--')                            # PostFixExpr
+    | ('++' | '--' | '+' | '-' | '~' | '!') expr    # UnaryExpr
+    | expr ('*' | '/' | '%') expr                   # MultiplicativeExpr
+    | expr ('+' | '-') expr                         # AdditiveExpr
+    | expr ('<<' | '>>' | '>>>') expr               # ShiftExpr
+    | expr ('<' | '>' | '<=' | '>=') expr           # RelationalExpr
+    | expr ('==' | '!=') expr                       # EqualityExpr
+    | expr '&' expr                                 # AndExpr
+    | expr '^' expr                                 # XorExpr
+    | expr '|' expr                                 # OrExpr
+    | expr '&&' expr                                # LogicalAndExpr
+    | expr '||' expr                                # LogicalOrExpr
+    | expr '?' expr ':' expr                        # TernaryExpr
+    | expr assignOp expr                            # AssignmentExpr
+    | newArray                                      # NewArrayExpr
+    | callFunc                                      # FunctionCallExpr
+    | BOOLEAN                                       # BooleanLiteralExpr
+    | INT                                           # IntLiteralExpr
+    | FLOAT                                         # FloatLiteralExpr
+    | STRING                                        # StringLiteralExpr
+    | CHAR                                          # CharLiteralExpr
+    | ID                                            # IdentifierExpr
     ;
 
 // ----------------------------
@@ -141,7 +145,8 @@ ID
     ;
 
 BOOLEAN
-    : 'true' | 'false'
+    : 'true'
+    | 'false'
     ;
 
 STRING
