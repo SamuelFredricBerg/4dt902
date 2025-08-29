@@ -6,14 +6,14 @@ grammar Martin;
 }
 
 // Syntax Specification ==> Context-free Grammar
-start :  function* main+ function;
+start :  function* main function*;
 
 main
-    : 'void' 'main' '(' ')' '{' stmt '}'
+    : 'void' 'main' '(' ')' block
     ;
 
 function
-    : TYPE  ID '(' ((functionInput ',')* functionInput)? ')' '{' stmt* '}'
+    : TYPE  ID '(' ((functionInput ',')* functionInput)? ')' block
     ;
 
 callFunction
@@ -24,8 +24,8 @@ functionInput
     ;
 
 stmt
-    : 'println'  '(' expr ')' ';'
-    | 'print' '(' expr ')' ';'
+    : 'println'  condition ';'
+    | 'print' condition ';'
     | assign
     | decl
     | ifAndElseStatments
@@ -35,31 +35,39 @@ stmt
     ;
 
 expr
-    : '(' expr ')'
+    : condition
     | expr ('*' | '/') expr
     | expr ('+' | '-') expr
     | expr ('<' | '>' | '==') expr
     | '-' expr
     | expr ('.length')
     | expr ('[' expr ']')
-    | '{' ((expr ',') expr)? '}'
+    | '{' ((expr ',')* expr)? '}'
     | newArray
     | callFunction
-    | (BOOLEAN
+    | BOOLEAN
     | INT
     | ID
     | STRING
     | FLOAT
-    | CHAR)
+    | CHAR
+    ;
+
+condition
+    : '(' expr ')'
+    ;
+
+block
+    : '{' stmt* '}'
     ;
 
 whileStatment
-    : 'while' ('(' expr ')' '{' stmt* '}')
+    : 'while' condition block
     ;
 
 ifAndElseStatments
-    : ('if') '(' expr ')' ('{' stmt* '}' | stmt)
-    ('else'  ('{' stmt* '}' | stmt) )?
+    : ('if') condition (block | stmt)
+    ('else'  (block | stmt) )?
     ;
 
 newArray
@@ -67,11 +75,11 @@ newArray
     ;
 
 assign
-    : ID ('[' expr ']')?  '=' expr ';'
+    : ID ('[' expr ']')? '=' expr ';'
     ;
 
 decl
-    : TYPE  ID ('=' expr)?  ';'
+    : TYPE ID ('=' expr)? ';'
     ;
 
 return
@@ -90,29 +98,30 @@ TYPE
     | 'char[]')
     ;
 FLOAT
-    : ('0' | (('1'..'9') ('0'..'9'))) '.' ('0'..'9')+
+    : ('0'|[1-9][0-9]*)'.'[0-9]+
     ;
 INT
-    : '0' | ('1' ..'9') ('0' ..'9')
+    : '0'|[1-9][0-9]*
     ;
 ID
-    : (('a'..'z') | ('A'..'Z'))+
+    : [a-zA-Z]+
     ;
 BOOLEAN
-    : ('true' | 'false')
+    : 'true'
+    | 'false'
     ;
 STRING
     : '"' [a-zA-Z!.,?=:() ]* '"'
     ;
 CHAR
-    : ''' [a-zA-Z!.,?=:()] '''
+    : '\'' [a-zA-Z!.,?=:() ] '\''
     ;
 
 WS
     : [ \t\r\n]+ -> skip
     ;
 COMMENT
-    : '# '~( '\r' | '\n' )* -> skip
+    : '#'~( '\r' | '\n' )* -> skip
     ;
 COMMENTFull
     : '/' .? '/' -> skip
