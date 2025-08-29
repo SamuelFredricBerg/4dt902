@@ -49,7 +49,18 @@ assign
     ;
 
 assignOp
-    : ('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '>>>=') //? Is this functional implementation of assinOps and expr priority?
+    : ('='
+    | '+='
+    | '-='
+    | '*='
+    | '/='
+    | '%='
+    | '&='
+    | '^='
+    | '|='
+    | '<<='
+    | '>>='
+    | '>>>=') //? Is this functional implementation of assinOps and expr priority?
     ;
 
 decl
