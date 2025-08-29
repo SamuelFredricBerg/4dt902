@@ -45,7 +45,7 @@ blockOrStmt
     ;
 
 assign
-    : ID ('[' expr ']')? '=' expr ';'   # AssignLogicWrongCheckExpr
+    : ID ('[' expr ']')? '=' expr ';'   //TODO: Think this is worng logically with the current grammer of expr
     ;
 
 decl
