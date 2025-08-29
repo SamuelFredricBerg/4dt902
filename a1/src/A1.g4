@@ -17,7 +17,7 @@ main
     ;
 
 funcDecl
-    : RETURNTYPE ID '(' (funcInput (',' funcInput)*)? ')' block
+    : returnType ID '(' (funcInput (',' funcInput)*)? ')' block
     ;
 
 funcInput
@@ -25,14 +25,15 @@ funcInput
     ;
 
 stmt
-    : 'println' '(' expr ')' ';'
-    | 'print' '(' expr ')' ';'
+    : 'println' condition ';'
+    | 'print' condition ';'
     | assign
     | decl
     | ifElseStmt
     | whileStmt
     | callFunc ';'
     | returnStmt
+    | expr ';'
     ;
 
 block
@@ -72,17 +73,26 @@ returnStmt
     ;
 
 whileStmt
-    : 'while' '(' expr ')' block
+    : 'while' condition block
     ;
 
 ifElseStmt
-    : 'if' '(' expr ')' blockOrStmt
-    ('else' 'if' '(' expr ')' blockOrStmt)*
+    : 'if' condition blockOrStmt
+    ('else' 'if' condition blockOrStmt)*
     ('else' blockOrStmt)?
     ;
 
 callFunc
     : ID '(' (expr (',' expr)*)? ')'
+    ;
+
+condition
+    : '(' expr ')'
+    ;
+
+returnType
+    : TYPE
+    | 'void'
     ;
 
 // ----------------------------
@@ -93,7 +103,7 @@ expr
     : '{' (expr (',' expr)*)? '}'                   # ArrayLiteralExpr
     | expr '[' expr ']'                             # ArrayAccessExpr
     | expr '.' 'length'                             # ArrayLengthExpr
-    | '(' expr ')'                                  # ParensExpr
+    | condition                                     # ParensExpr
     | expr ('++' | '--')                            # PostFixExpr
     | ('++' | '--' | '+' | '-' | '~' | '!') expr    # UnaryExpr
     | expr ('*' | '/' | '%') expr                   # MultiplicativeExpr
@@ -106,7 +116,7 @@ expr
     | expr '|' expr                                 # OrExpr
     | expr '&&' expr                                # LogicalAndExpr
     | expr '||' expr                                # LogicalOrExpr
-    | expr '?' expr ':' expr                        # TernaryExpr
+    | condition '?' expr ':' expr                   # TernaryExpr
     | expr assignOp expr                            # AssignmentExpr
     | newArray                                      # NewArrayExpr
     | callFunc                                      # FunctionCallExpr
@@ -136,11 +146,6 @@ TYPE
     | 'char' '[]'?
     | 'bool'
     | 'string'
-    ;
-
-RETURNTYPE
-    : TYPE
-    | 'void'
     ;
 
 FLOAT
