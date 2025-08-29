@@ -40,8 +40,8 @@ block
     ;
 
 blockOrStmt
-    : (block
-    | stmt)
+    : block
+    | stmt
     ;
 
 assign
