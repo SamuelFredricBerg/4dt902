@@ -23,7 +23,7 @@
                     "request": "launch",
                     "name": "Debug Exercise",
                     "grammar": "/home/fred/Documents/4dt902/a1/examples/Exercise/Exercise.g4",
-                    "input": "/home/fred/Documents/4dt902/a1/examples/Exercise/expr_input.txt",
+                    "input": "/home/fred/Documents/4dt902/a1/examples/Exercise/input.ofp",
                     "visualParseTree": true
                 }
             ]
