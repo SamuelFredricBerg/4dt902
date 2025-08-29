@@ -17,7 +17,7 @@ main
     ;
 
 function
-    : returnType ID '(' (functionInput (',' functionInput)*)? ')' block
+    : RETURNTYPE ID '(' (functionInput (',' functionInput)*)? ')' block
     ;
 
 functionInput
@@ -124,7 +124,7 @@ TYPE
     | 'string'
     ;
 
-returnType
+RETURNTYPE
     : TYPE
     | 'void'
     ;
