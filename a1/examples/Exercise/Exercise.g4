@@ -24,28 +24,59 @@ block
 stmt
     : expr ';'
     | assign
+    | decl
+    | ifElse
+    | while
+    | 'print' '(' expr ')' ';'
+    ;
+
+decl
+    : TYPE ID ('=' expr)? ';'
     ;
 
 expr
     :  '(' expr ')'
     | expr ('*' | '/') expr
     | expr ('+' | '-') expr
-    | (INT | ID)
+    | expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
+    | expr ('&&' | '||') expr
+    | INT
+    | BOOLEAN
+    | ID
     ;
 
 assign
     : ID '=' expr ';'
     ;
 
+ifElse
+    : 'if' '(' expr ')' block
+    ('else' block)?
+    ;
+
+while
+    : 'while' '(' expr ')' block
+    ;
+
 // Lexer Specification ==> Regular Expressions
 // Only non-trivial expressions. Trivial token definitions are hard coded in grammar.
 
+TYPE
+    : 'int'
+    | 'boolean'
+    ;
+
+BOOLEAN
+    : 'true'
+    | 'false'
+    ;
+
 INT
-    : ('0'..'9')+
+    : '0' | [1-9][0-9]*
     ;
 
 ID
-    : ('a'..'z')
+    : [a-zA-Z0-9]+
     ;
 
 WS

@@ -1,4 +1,5 @@
 program Compute {
+    /*
     // Declarations
     int n = 100;
     int count = 2;
@@ -21,4 +22,21 @@ program Compute {
     if (fib > 1) {
         print(fib);
     }
+    */
+
+    /*
+    int first = 1;
+    int second = first + 2;
+    int third;
+    */
+
+    // Declarations
+    int a = 1;
+    boolean v1;
+    boolean v2 = true;
+
+    // Statements
+    v1 = 8 < a + 1; // RHS Priority: 8 < (a + 1)
+    v2 = 4 < a && 5 < a; // RHS Priority; (4 < a) && (5 < a)
+
 }
