@@ -21,7 +21,7 @@ funcDecl
     ;
 
 funcInput
-    : TYPE ID
+    : typeId
     ;
 
 stmt
@@ -65,7 +65,11 @@ assignOp
     ;
 
 decl
-    : TYPE ID ('=' expr)? ';'
+    : typeId ('=' expr)? ';'
+    ;
+
+typeId
+    : TYPE ID
     ;
 
 returnStmt
