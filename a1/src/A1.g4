@@ -9,18 +9,18 @@ grammar A1;
 // ----------------------------
 
 start
-    : (function*  main function*) EOF
+    : (funcDecl*  main funcDecl*) EOF
     ;
 
 main
     : 'void' 'main' '(' ')' block
     ;
 
-function
-    : RETURNTYPE ID '(' (functionInput (',' functionInput)*)? ')' block
+funcDecl
+    : RETURNTYPE ID '(' (funcInput (',' funcInput)*)? ')' block
     ;
 
-functionInput
+funcInput
     : TYPE ID
     ;
 
@@ -29,10 +29,10 @@ stmt
     | 'print' '(' expr ')' ';'
     | assign
     | decl
-    | ifAndElseStatements
-    | whileStatement
-    | callFunction ';'
-    | returnStatement
+    | ifElseStmt
+    | whileStmt
+    | callFunc ';'
+    | returnStmt
     ;
 
 block
@@ -45,28 +45,28 @@ blockOrStmt
     ;
 
 assign
-    : ID ('[' expr ']')? '=' expr ';'
+    : ID ('[' expr ']')? '=' expr ';'   # AssignLogicWrongCheckExpr
     ;
 
 decl
     : TYPE ID ('=' expr)? ';'
     ;
 
-returnStatement
+returnStmt
     : 'return' expr? ';'
     ;
 
-whileStatement
+whileStmt
     : 'while' '(' expr ')' block
     ;
 
-ifAndElseStatements
+ifElseStmt
     : 'if' '(' expr ')' blockOrStmt
     ('else' 'if' '(' expr ')' blockOrStmt)*
     ('else' blockOrStmt)?
     ;
 
-callFunction
+callFunc
     : ID '(' (expr (',' expr)*)? ')'
     ;
 
@@ -80,8 +80,7 @@ expr
     | expr '.' 'length'                                                                                 # ArrayLengthExpr
     | '(' expr ')'                                                                                      # ParensExpr
     | expr ('++' | '--')                                                                                # PostFixExpr
-    | ('++' | '--' | '+' | '-') expr                                                                    # UnaryExpr
-    | ('~' | '!') expr                                                                                  # UnaryNotExpr
+    | ('++' | '--' | '+' | '-' | '~' | '!') expr                                                        # UnaryExpr
     | expr ('*' | '/' | '%') expr                                                                       # MultiplicativeExpr
     | expr ('+' | '-') expr                                                                             # AdditiveExpr
     | expr ('<<' | '>>' | '>>>') expr                                                                   # ShiftExpr
@@ -95,7 +94,7 @@ expr
     | expr '?' expr ':' expr                                                                            # TernaryExpr
     | expr ('=' | '+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '^=' | '|=' | '<<=' | '>>=' | '>>>=') expr  # AssignmentExpr
     | newArray                                                                                          # NewArrayExpr
-    | callFunction                                                                                      # FunctionCallExpr
+    | callFunc                                                                                          # FunctionCallExpr
     | BOOLEAN                                                                                           # BooleanLiteralExpr
     | INT                                                                                               # IntLiteralExpr
     | FLOAT                                                                                             # FloatLiteralExpr
