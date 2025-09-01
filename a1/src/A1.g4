@@ -4,9 +4,8 @@ grammar A1;
     package generated;
 }
 
-// ----------------------------
+
 // Parser Rules
-// ----------------------------
 
 start
     : (funcDecl*  main funcDecl*) EOF
@@ -99,9 +98,8 @@ returnType
     | 'void'
     ;
 
-// ----------------------------
+
 // Expression Rules with Precedence
-// ----------------------------
 
 expr
     : '{' (expr (',' expr)*)? '}'                   # ArrayLiteralExpr
@@ -132,17 +130,15 @@ expr
     | ID                                            # IdentifierExpr
     ;
 
-// ----------------------------
+
 // Array Creation
-// ----------------------------
 
 newArray
     : 'new' TYPE '[' expr ']'
     ;
 
-// ----------------------------
+
 // Lexer Rules
-// ----------------------------
 
 TYPE
     : 'int' '[]'?
@@ -177,10 +173,8 @@ CHAR
     : '\'' ([a-zA-Z!.?,=:() ]) '\''
     ;
 
-// ----------------------------
-// Comments and Whitespace
-// ----------------------------
 
+// Comments and Whitespace
 
 WS
     : [ \t\r\n]+ -> skip
