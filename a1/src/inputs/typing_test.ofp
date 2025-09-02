@@ -8,7 +8,7 @@ void main() {
     //float a = 19.192;
     //float[] arr = new float[3];
 
-    int a = 1;
+    //int a = 1;
 
     if (a == 1)
         a = a + 1;

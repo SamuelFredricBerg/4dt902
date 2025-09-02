@@ -26,13 +26,12 @@ funcInput
 stmt
     : 'println' condition ';'
     | 'print' condition ';'
-    | assign
     | decl
+    | assign
+    | expr ';'?
     | ifElseStmt
     | whileStmt
-    | callFunc ';'
     | returnStmt
-    | expr ';'
     ; //TODO: Priority???
 
 block
@@ -45,7 +44,7 @@ blockOrStmt
     ;
 
 assign
-    : ID ('[' expr ']')? '=' expr ';'
+    : ID ('[' expr ']')? ('=' expr) ';'
     ; //TODO: stmt or expr??
 
 decl
@@ -66,7 +65,6 @@ whileStmt
 
 ifElseStmt
     : 'if' condition blockOrStmt
-    ('else' 'if' condition blockOrStmt)*
     ('else' blockOrStmt)?
     ;
 
