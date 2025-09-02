@@ -33,7 +33,7 @@ stmt
     | callFunc ';'
     | returnStmt
     | expr ';'
-    ;
+    ; //TODO: Priority???
 
 block
     : '{' stmt* '}'
@@ -45,23 +45,8 @@ blockOrStmt
     ;
 
 assign
-    : ID ('[' expr ']')? assignOp expr ';'   //TODO: Think this is worng logically with the current grammer of expr
-    ;
-
-assignOp
-    : ('='
-    | '+='
-    | '-='
-    | '*='
-    | '/='
-    | '%='
-    | '&='
-    | '^='
-    | '|='
-    | '<<='
-    | '>>='
-    | '>>>=') //? Is this functional implementation of assinOps and expr priority?
-    ;
+    : ID ('[' expr ']')? '=' expr ';'
+    ; //TODO: stmt or expr??
 
 decl
     : typeId ('=' expr)? ';'
@@ -94,41 +79,33 @@ condition
     ;
 
 returnType
-    : TYPE
-    | 'void'
+    : (TYPE
+    | 'void')
     ;
 
 
 // Expression Rules with Precedence
 
 expr
-    : '{' (expr (',' expr)*)? '}'                   # ArrayLiteralExpr
-    | expr '[' expr ']'                             # ArrayAccessExpr
-    | expr '.' 'length'                             # ArrayLengthExpr
-    | condition                                     # ParensExpr
-    | expr ('++' | '--')                            # PostFixExpr
-    | ('++' | '--' | '+' | '-' | '~' | '!') expr    # UnaryExpr
-    | expr ('*' | '/' | '%') expr                   # MultiplicativeExpr
-    | expr ('+' | '-') expr                         # AdditiveExpr
-    | expr ('<<' | '>>' | '>>>') expr               # ShiftExpr
-    | expr ('<' | '>' | '<=' | '>=') expr           # RelationalExpr
-    | expr ('==' | '!=') expr                       # EqualityExpr
-    | expr '&' expr                                 # AndExpr
-    | expr '^' expr                                 # XorExpr
-    | expr '|' expr                                 # OrExpr
-    | expr '&&' expr                                # LogicalAndExpr
-    | expr '||' expr                                # LogicalOrExpr
-    | condition '?' expr ':' expr                   # TernaryExpr
-    | expr assignOp expr                            # AssignmentExpr
-    | newArray                                      # NewArrayExpr
-    | callFunc                                      # FunctionCallExpr
-    | BOOLEAN                                       # BooleanLiteralExpr
-    | INT                                           # IntLiteralExpr
-    | FLOAT                                         # FloatLiteralExpr
-    | STRING                                        # StringLiteralExpr
-    | CHAR                                          # CharLiteralExpr
-    | ID                                            # IdentifierExpr
-    ;
+    : '{' (expr (',' expr)*)? '}'   # ArrayLiteralExpr
+    | expr '[' expr ']'             # ArrayAccessExpr
+    | expr '.' 'length'             # ArrayLengthExpr
+    | condition                     # ParensExpr
+    | '-' expr                      # UnaryExpr
+    | expr ('*' | '/' ) expr        # MultiplicativeExpr
+    | expr ('+' | '-') expr         # AdditiveExpr
+    | expr ('<' | '>') expr         # RelationalExpr
+    | expr '==' expr                # EqualityExpr
+    | assign                        # AssignmentExpr
+    | newArray                      # NewArrayExpr
+    | callFunc                      # FunctionCallExpr
+    | BOOLEAN                       # BooleanLiteralExpr
+    | INT                           # IntLiteralExpr
+    | FLOAT                         # FloatLiteralExpr
+    | STRING                        # StringLiteralExpr
+    | CHAR                          # CharLiteralExpr
+    | ID                            # IdentifierExpr
+    ;   //TODO: Priority okay??
 
 
 // Array Creation
@@ -141,11 +118,11 @@ newArray
 // Lexer Rules
 
 TYPE
-    : 'int' '[]'?
+    : ('int' '[]'?
     | 'float' '[]'?
     | 'char' '[]'?
     | 'bool'
-    | 'string'
+    | 'string')
     ;
 
 FLOAT
@@ -171,7 +148,7 @@ STRING
 
 CHAR
     : '\'' ([a-zA-Z!.?,=:() ]) '\''
-    ;
+    ; //TODO: Check if same spec as string for chars?
 
 
 // Comments and Whitespace
