@@ -54,7 +54,7 @@ decl
 
 typeId
     : TYPE ID
-    ;
+    ; //TODO: Adds complexity?
 
 returnStmt
     : 'return' expr? ';'
