@@ -109,7 +109,7 @@ newArray
 
 // Lexer Rules
 
-IF
+IF //TODO: will LEXER rules for stmts such as if add complexity for future Assignmnents???
     : 'if'
     ;
 
