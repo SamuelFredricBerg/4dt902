@@ -74,7 +74,7 @@ blockOrStmt
     ;
 
 assignStmt
-    : ID ('[' expr ']')? ('=' expr) ';'
+    : ID ('[' expr ']')? '=' expr ';'
     ;
 
 declStmt
@@ -196,3 +196,5 @@ BLOCK_COMMENT
 EOL_COMMENT
     : '#'~( '\r' | '\n' )* -> skip
     ;
+
+//TODO: Why am I not able to add all the different types of comments under one LEXER rule???
