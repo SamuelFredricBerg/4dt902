@@ -8,85 +8,40 @@ grammar A1;
 // Parser Rules
 
 start
-    : (funcDecl*  main funcDecl*) EOF
+    : funcDecl*  main funcDecl* EOF
     ;
 
 main
-    : 'void' 'main' '(' ')' block
-    ;
-
-block
-    : '{' stmt* '}'
-    ;
-
-blockOrStmt
-    : block
-    | stmt
-    ;
-
-returnType
-    : (TYPE
-    | 'void')
+    : VOID MAIN '(' ')' block
     ;
 
 funcDecl
     : returnType ID '(' (funcInput (',' funcInput)*)? ')' block
     ;
 
-funcInput
-    : typeId
-    ;
-
 callFunc
     : ID '(' (expr (',' expr)*)? ')'
     ;
 
-returnStmt
-    : 'return' expr? ';'
+funcInput
+    : typeId
     ;
 
-typeId
-    : TYPE ID
-    ; //TODO: Adds complexity?
-
-declStmt
-    : typeId ('=' expr)? ';'
+returnType
+    : TYPE
+    | VOID
     ;
 
-assignStmt
-    : ID ('[' expr ']')? ('=' expr) ';'
-    ;
-
-condition
-    : '(' expr ')'
-    ;
-
-whileStmt
-    : 'while' condition block
-    ;
-
-ifElseStmt
-    : 'if' condition blockOrStmt
-    ('else' blockOrStmt)?
-    ;
-
-newArray
-    : 'new' TYPE '[' expr ']'
-    ;
-
-
-// Precedence Relatade (needed for stmt????)
+//TODO: Precedence Relatade (needed for stmt????)
 
 stmt
-    : 'println' condition ';'
-    | 'print' condition ';'
+    : PRINTLN condition ';'
+    | PRINT condition ';'
     | assignStmt
     | declStmt
     | ifElseStmt
     | whileStmt
-    | callFunc ';'
     | returnStmt
-    // | expr ';'
     ; //TODO: Priority???
 
 expr
@@ -101,14 +56,93 @@ expr
     | expr '==' expr
     | newArray
     | callFunc
-    | (BOOLEAN | INT | FLOAT | STRING | CHAR | ID)
+    | BOOLEAN
+    | INT
+    | FLOAT
+    | CHAR
+    | STRING
+    | ID
     ; //TODO: Priority???
+
+block
+    : '{' stmt* '}'
+    ;
+
+blockOrStmt
+    : block
+    | stmt
+    ;
+
+assignStmt
+    : ID ('[' expr ']')? ('=' expr) ';'
+    ;
+
+declStmt
+    : typeId ('=' expr)? ';'
+    ;
+
+typeId
+    : TYPE ID
+    ; //TODO: Adds complexity?
+
+returnStmt
+    : RETURN expr? ';'
+    ;
+
+ifElseStmt
+    : IF condition blockOrStmt
+    (ELSE blockOrStmt)?
+    ;
+
+whileStmt
+    : WHILE condition block
+    ;
+
+condition
+    : '(' expr ')'
+    ;
+
+newArray
+    : NEW TYPE '[' expr ']'
+    ;
 
 
 // Lexer Rules
 
-ID
-    : [a-zA-Z]+
+IF
+    : 'if'
+    ;
+
+ELSE
+    : 'else'
+    ;
+
+WHILE
+    : 'while'
+    ;
+
+PRINTLN
+    : 'println'
+    ;
+
+PRINT
+    : 'print'
+    ;
+
+RETURN
+    : 'return'
+    ;
+
+NEW
+    : 'new'
+    ;
+
+VOID
+    : 'void'
+    ;
+
+MAIN
+    : 'main'
     ;
 
 TYPE
@@ -119,6 +153,11 @@ TYPE
     | 'string')
     ;
 
+BOOLEAN
+    : 'true'
+    | 'false'
+    ;
+
 INT
     : '0'|[1-9][0-9]*
     ;
@@ -127,17 +166,16 @@ FLOAT
     : ('0'|[1-9][0-9]*)'.'[0-9]+
     ;
 
-BOOLEAN
-    : 'true'
-    | 'false'
-    ;
-
 CHAR
     : '\'' ([a-zA-Z!.?,=:() ]) '\''
     ; //TODO: Check if same spec as string for chars?
 
 STRING
     : '"' ([a-zA-Z!.?,=:() ])* '"'
+    ;
+
+ID
+    : [a-zA-Z]+
     ;
 
 
@@ -155,6 +193,6 @@ BLOCK_COMMENT
     : '/*' .*? '*/' -> skip
     ;
 
-COMMENT
+EOL_COMMENT
     : '#'~( '\r' | '\n' )* -> skip
     ;
