@@ -12,7 +12,7 @@ application
     ;
 
 main
-    : VOID MAIN '(' ')' block
+    : 'void' 'main' '(' ')' block
     ;
 
 funcDecl
@@ -29,14 +29,14 @@ funcInput
 
 returnType
     : TYPE
-    | VOID
+    | 'void'
     ;
 
 //TODO: Precedence Relatade (needed for stmt????)
 
 stmt
-    : PRINTLN condition ';'
-    | PRINT condition ';'
+    : 'println' condition ';'
+    | 'print' condition ';'
     | assignStmt
     | declStmt
     | ifElseStmt
@@ -86,16 +86,16 @@ typeId
     ; //TODO: Adds complexity?
 
 returnStmt
-    : RETURN expr? ';'
+    : 'return' expr? ';'
     ;
 
 ifElseStmt
-    : IF condition blockOrStmt
-    (ELSE blockOrStmt)?
+    : 'if' condition blockOrStmt
+    ('else' blockOrStmt)?
     ;
 
 whileStmt
-    : WHILE condition block
+    : 'while' condition block
     ;
 
 condition
@@ -103,7 +103,7 @@ condition
     ;
 
 newArray
-    : NEW TYPE '[' expr ']'
+    : 'new' TYPE '[' expr ']'
     ;
 
 
@@ -111,38 +111,6 @@ newArray
 
 IF //TODO: will LEXER rules for stmts such as if add complexity for future Assignmnents???
     : 'if'
-    ;
-
-ELSE
-    : 'else'
-    ;
-
-WHILE
-    : 'while'
-    ;
-
-PRINTLN
-    : 'println'
-    ;
-
-PRINT
-    : 'print'
-    ;
-
-RETURN
-    : 'return'
-    ;
-
-NEW
-    : 'new'
-    ;
-
-VOID
-    : 'void'
-    ;
-
-MAIN
-    : 'main'
     ;
 
 TYPE
