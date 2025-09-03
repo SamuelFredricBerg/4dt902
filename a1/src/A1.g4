@@ -7,7 +7,7 @@ grammar A1;
 
 // Parser Rules
 
-start
+application
     : funcDecl*  main funcDecl* EOF
     ;
 
