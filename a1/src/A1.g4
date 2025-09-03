@@ -15,25 +15,6 @@ main
     : 'void' 'main' '(' ')' block
     ;
 
-funcDecl
-    : returnType ID '(' (funcInput (',' funcInput)*)? ')' block
-    ;
-
-funcInput
-    : typeId
-    ;
-
-stmt
-    : 'println' condition ';'
-    | 'print' condition ';'
-    | decl
-    | assign
-    | expr ';'?
-    | ifElseStmt
-    | whileStmt
-    | returnStmt
-    ; //TODO: Priority???
-
 block
     : '{' stmt* '}'
     ;
@@ -43,20 +24,41 @@ blockOrStmt
     | stmt
     ;
 
-assign
-    : ID ('[' expr ']')? ('=' expr) ';'
-    ; //TODO: stmt or expr??
+returnType
+    : (TYPE
+    | 'void')
+    ;
 
-decl
-    : typeId ('=' expr)? ';'
+funcDecl
+    : returnType ID '(' (funcInput (',' funcInput)*)? ')' block
+    ;
+
+funcInput
+    : typeId
+    ;
+
+callFunc
+    : ID '(' (expr (',' expr)*)? ')'
+    ;
+
+returnStmt
+    : 'return' expr? ';'
     ;
 
 typeId
     : TYPE ID
     ; //TODO: Adds complexity?
 
-returnStmt
-    : 'return' expr? ';'
+declStmt
+    : typeId ('=' expr)? ';'
+    ;
+
+assignStmt
+    : ID ('[' expr ']')? ('=' expr) ';'
+    ;
+
+condition
+    : '(' expr ')'
     ;
 
 whileStmt
@@ -68,52 +70,46 @@ ifElseStmt
     ('else' blockOrStmt)?
     ;
 
-callFunc
-    : ID '(' (expr (',' expr)*)? ')'
-    ;
-
-condition
-    : '(' expr ')'
-    ;
-
-returnType
-    : (TYPE
-    | 'void')
-    ;
-
-
-// Expression Rules with Precedence
-
-expr
-    : '{' (expr (',' expr)*)? '}'   # ArrayLiteralExpr
-    | expr '[' expr ']'             # ArrayAccessExpr
-    | expr '.' 'length'             # ArrayLengthExpr
-    | condition                     # ParensExpr
-    | '-' expr                      # UnaryExpr
-    | expr ('*' | '/' ) expr        # MultiplicativeExpr
-    | expr ('+' | '-') expr         # AdditiveExpr
-    | expr ('<' | '>') expr         # RelationalExpr
-    | expr '==' expr                # EqualityExpr
-    | assign                        # AssignmentExpr
-    | newArray                      # NewArrayExpr
-    | callFunc                      # FunctionCallExpr
-    | BOOLEAN                       # BooleanLiteralExpr
-    | INT                           # IntLiteralExpr
-    | FLOAT                         # FloatLiteralExpr
-    | STRING                        # StringLiteralExpr
-    | CHAR                          # CharLiteralExpr
-    | ID                            # IdentifierExpr
-    ;   //TODO: Priority okay??
-
-
-// Array Creation
-
 newArray
     : 'new' TYPE '[' expr ']'
     ;
 
 
+// Precedence Relatade (needed for stmt????)
+
+stmt
+    : 'println' condition ';'
+    | 'print' condition ';'
+    | assignStmt
+    | declStmt
+    | ifElseStmt
+    | whileStmt
+    | callFunc ';'
+    | returnStmt
+    // | expr ';'
+    ; //TODO: Priority???
+
+expr
+    : '{' (expr (',' expr)*)? '}'
+    | expr '[' expr ']'
+    | expr '.length'
+    | condition
+    | '-' expr
+    | expr ('*' | '/' ) expr
+    | expr ('+' | '-') expr
+    | expr ('<' | '>') expr
+    | expr '==' expr
+    | newArray
+    | callFunc
+    | (BOOLEAN | INT | FLOAT | STRING | CHAR | ID)
+    ; //TODO: Priority???
+
+
 // Lexer Rules
+
+ID
+    : [a-zA-Z]+
+    ;
 
 TYPE
     : ('int' '[]'?
@@ -123,16 +119,12 @@ TYPE
     | 'string')
     ;
 
-FLOAT
-    : ('0'|[1-9][0-9]*)'.'[0-9]+
-    ;
-
 INT
     : '0'|[1-9][0-9]*
     ;
 
-ID
-    : [a-zA-Z]+
+FLOAT
+    : ('0'|[1-9][0-9]*)'.'[0-9]+
     ;
 
 BOOLEAN
@@ -140,13 +132,13 @@ BOOLEAN
     | 'false'
     ;
 
-STRING
-    : '"' ([a-zA-Z!.?,=:() ])* '"'
-    ;
-
 CHAR
     : '\'' ([a-zA-Z!.?,=:() ]) '\''
     ; //TODO: Check if same spec as string for chars?
+
+STRING
+    : '"' ([a-zA-Z!.?,=:() ])* '"'
+    ;
 
 
 // Comments and Whitespace
