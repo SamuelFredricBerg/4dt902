@@ -23,7 +23,7 @@
                     "request": "launch",
                     "name": "Debug A1",
                     "grammar": "/home/fred/Documents/4dt902/a1/src/A1.g4",
-                    "input": "/home/fred/Documents/4dt902/a1/src/inputs/test.ofp",
+                    "input": "/home/fred/Documents/4dt902/a1/src/inputs/typing_test.ofp",
                     "visualParseTree": true
                 }
             ]
