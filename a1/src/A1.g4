@@ -50,9 +50,9 @@ expr
     | expr '.length'
     | condition
     | '-' expr
-    | expr ('*' | '/' ) expr
-    | expr ('+' | '-') expr
-    | expr ('<' | '>') expr
+    | expr MULDIV expr
+    | expr ('+' | '-') expr //TODO: Why does it fail if I use ADDSUB LEXER rule here instead of current??
+    | expr RELOP expr
     | expr '==' expr
     | newArray
     | callFunc
@@ -111,6 +111,18 @@ newArray
 
 IF //TODO: will LEXER rules for stmts such as if add complexity for future Assignmnents???
     : 'if'
+    ;
+
+MULDIV
+    : '*' | '/'
+    ;
+
+ADDSUB
+    : '+' | '-'
+    ;
+
+RELOP
+    : '<' | '>'
     ;
 
 TYPE
