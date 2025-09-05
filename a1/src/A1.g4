@@ -16,33 +16,27 @@ main
     ;
 
 funcDecl
-    : returnType ID '(' (funcInput (',' funcInput)*)? ')' block
+    : (TYPE | 'void') ID '(' argList ')' block
     ;
 
 callFunc
     : ID '(' (expr (',' expr)*)? ')'
     ;
 
-funcInput
-    : typeId
+argList
+    : (TYPE ID (',' TYPE ID)*)?
     ;
-
-returnType
-    : TYPE
-    | 'void'
-    ;
-
-//TODO: Precedence Relatade (needed for stmt????)
 
 stmt
     : 'println' condition ';'
     | 'print' condition ';'
+    | callFunc ';'
     | assignStmt
     | declStmt
     | ifElseStmt
     | whileStmt
     | returnStmt
-    ; //TODO: Priority???
+    ;
 
 expr
     : '{' (expr (',' expr)*)? '}'
@@ -50,9 +44,9 @@ expr
     | expr '.length'
     | condition
     | '-' expr
-    | expr MULDIV expr
-    | expr ('+' | '-') expr //TODO: Why does it fail if I use ADDSUB LEXER rule here instead of current??
-    | expr RELOP expr
+    | expr ('*' | '/') expr
+    | expr ('+' | '-') expr
+    | expr ('<' | '>') expr
     | expr '==' expr
     | newArray
     | callFunc
@@ -62,7 +56,7 @@ expr
     | CHAR
     | STRING
     | ID
-    ; //TODO: Priority???
+    ;
 
 block
     : '{' stmt* '}'
@@ -78,12 +72,8 @@ assignStmt
     ;
 
 declStmt
-    : typeId ('=' expr)? ';'
+    : TYPE ID ('=' expr)? ';'
     ;
-
-typeId
-    : TYPE ID
-    ; //TODO: Adds complexity?
 
 returnStmt
     : 'return' expr? ';'
@@ -109,22 +99,6 @@ newArray
 
 // Lexer Rules
 
-IF //TODO: will LEXER rules for stmts such as if add complexity for future Assignmnents???
-    : 'if'
-    ;
-
-MULDIV
-    : '*' | '/'
-    ;
-
-ADDSUB
-    : '+' | '-'
-    ;
-
-RELOP
-    : '<' | '>'
-    ;
-
 TYPE
     : ('int' '[]'?
     | 'float' '[]'?
@@ -148,7 +122,7 @@ FLOAT
 
 CHAR
     : '\'' ([a-zA-Z!.?,=:() ]) '\''
-    ; //TODO: Check if same spec as string for chars?
+    ;
 
 STRING
     : '"' ([a-zA-Z!.?,=:() ])* '"'
@@ -176,5 +150,3 @@ BLOCK_COMMENT
 EOL_COMMENT
     : '#'~( '\r' | '\n' )* -> skip
     ;
-
-//TODO: Why am I not able to add all the different types of comments under one LEXER rule???
