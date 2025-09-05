@@ -16,15 +16,19 @@ main
     ;
 
 funcDecl
-    : (TYPE | 'void') ID '(' argList ')' block
+    : (TYPE | 'void') ID '(' paramList? ')' block
     ;
 
 callFunc
-    : ID '(' (expr (',' expr)*)? ')'
+    : ID '(' argList? ')'
+    ;
+
+paramList
+    : TYPE ID (',' TYPE ID)*
     ;
 
 argList
-    : (TYPE ID (',' TYPE ID)*)?
+    : expr (',' expr)*
     ;
 
 stmt
@@ -39,7 +43,7 @@ stmt
     ;
 
 expr
-    : '{' (expr (',' expr)*)? '}'
+    : '{' argList? '}'
     | expr '[' expr ']'
     | expr '.length'
     | condition
