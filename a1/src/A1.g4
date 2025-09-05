@@ -100,11 +100,11 @@ newArray
 // Lexer Rules
 
 TYPE
-    : ('int' '[]'?
+    : 'int' '[]'?
     | 'float' '[]'?
     | 'char' '[]'?
     | 'bool'
-    | 'string')
+    | 'string'
     ;
 
 BOOLEAN
