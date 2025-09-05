@@ -139,13 +139,11 @@ WS
     ;
 
 LINE_COMMENT
-    : '//' ~[\r\n]* -> skip
+    : ('//' | '#') ~[\r\n]* -> skip
     ;
 
 BLOCK_COMMENT
     : '/*' .*? '*/' -> skip
     ;
 
-EOL_COMMENT
-    : '#'~( '\r' | '\n' )* -> skip
-    ;
+
