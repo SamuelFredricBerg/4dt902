@@ -66,11 +66,6 @@ block
     : '{' stmt* '}'
     ;
 
-blockOrStmt
-    : block
-    | stmt
-    ;
-
 assignStmt
     : ID ('[' expr ']')? '=' expr ';'
     ;
@@ -84,8 +79,8 @@ returnStmt
     ;
 
 ifElseStmt
-    : 'if' condition blockOrStmt
-    ('else' blockOrStmt)?
+    : 'if' condition (block | stmt)
+    ('else' (block | stmt))?
     ;
 
 whileStmt
