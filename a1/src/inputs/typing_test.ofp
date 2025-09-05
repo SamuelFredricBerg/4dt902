@@ -8,9 +8,9 @@ void main() {
     //float a = 19.192;
     //float[] arr = new float[3];
 
-    //int a = 11 + 22 * 33 - 44 / 4;
-    //int b = - 1;
+    int a = 11 + 22 * 33 - 44 / 4;
+    int b = - 1;
 
-    //bool a = 1<2 == 2<3;
+    //bool a = 1 < 2 == 2 < 3;
 
 }
