@@ -38,8 +38,9 @@ expr
     :  '(' expr ')'
     | expr ('*' | '/') expr
     | expr ('+' | '-') expr
-    | expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
-    | expr ('&&' | '||') expr
+    | expr ('<' | '>') expr
+    | expr '==' expr
+    | expr '&&' expr
     | INT
     | BOOLEAN
     | ID
@@ -50,8 +51,8 @@ assign
     ;
 
 ifElse
-    : 'if' '(' expr ')' block
-    ('else' block)?
+    : 'if' '(' expr ')' (block | stmt)
+    ('else' (block | stmt))?
     ;
 
 while
@@ -76,7 +77,7 @@ INT
     ;
 
 ID
-    : [a-zA-Z0-9]+
+    : [a-zA-Z][a-zA-Z0-9]*
     ;
 
 WS
