@@ -84,7 +84,7 @@ ifElseStmt
     ;
 
 whileStmt
-    : 'while' condition block
+    : 'while' condition (block | stmt)
     ;
 
 condition
