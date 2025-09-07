@@ -54,9 +54,9 @@ expr
     | expr '==' expr
     | newArray
     | callFunc
-    | BOOLEAN
     | INT
     | FLOAT
+    | BOOLEAN
     | CHAR
     | STRING
     | ID
