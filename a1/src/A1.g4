@@ -32,8 +32,7 @@ argList
     ;
 
 stmt
-    : 'println' condition ';'
-    | 'print' condition ';'
+    : printStmt
     | callFunc ';'
     | assignStmt
     | declStmt
@@ -53,7 +52,7 @@ expr
     | expr ('+' | '-') expr
     | expr ('<' | '>') expr
     | expr '==' expr
-    | newArray
+    | 'new' TYPE '[' expr ']' // ? stmt??
     | INT
     | FLOAT
     | BOOLEAN
@@ -64,6 +63,10 @@ expr
 
 block
     : '{' stmt* '}'
+    ;
+
+printStmt
+    : ('print' | 'println') condition ';'
     ;
 
 assignStmt
@@ -91,11 +94,6 @@ condition
     : '(' expr ')'
     ;
 
-newArray
-    : 'new' TYPE '[' expr ']'
-    ;
-
-
 // Lexer Rules
 
 TYPE
@@ -116,7 +114,7 @@ INT
     ;
 
 FLOAT
-    : ('0'|[1-9][0-9]*)'.'[0-9]+
+    : INT'.'[0-9]+
     ;
 
 CHAR
