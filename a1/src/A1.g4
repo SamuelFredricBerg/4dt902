@@ -46,6 +46,7 @@ expr
     : '{' argList? '}'
     | expr '[' expr ']'
     | expr '.length'
+    | callFunc
     | condition
     | '-' expr
     | expr ('*' | '/') expr
@@ -53,7 +54,6 @@ expr
     | expr ('<' | '>') expr
     | expr '==' expr
     | newArray
-    | callFunc
     | INT
     | FLOAT
     | BOOLEAN
