@@ -52,7 +52,7 @@ expr
     | expr ('+' | '-') expr
     | expr ('<' | '>') expr
     | expr '==' expr
-    | 'new' TYPE '[' expr ']' // ? stmt??
+    | 'new' TYPE '[' expr ']'
     | INT
     | FLOAT
     | BOOLEAN
