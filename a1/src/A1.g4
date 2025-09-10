@@ -53,12 +53,12 @@ expr
     | expr ('<' | '>') expr
     | expr '==' expr
     | 'new' TYPE '[' expr ']'
-    | INT
+    | (INT
     | FLOAT
     | BOOLEAN
     | CHAR
     | STRING
-    | ID
+    | ID)
     ;
 
 block

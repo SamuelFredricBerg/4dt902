@@ -1,0 +1,37 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "antlr4.debug": {
+            "visualParseTreeHorizontal": true,
+            "visualParseTreeClustered": false
+        },
+        "antlr4.generation": {
+            "outputDir": "/home/fred/Documents/4dt902/a1/examples/Exams/exam31-10-2023/generated",
+            "mode": "external",
+            "language": "Java",
+            "listeners": true,
+            "visitors": true
+        },
+        "launch": {
+            "configurations": [
+                {
+                    "type": "antlr-debug",
+                    "request": "launch",
+                    "name": "Debug A1",
+                    "grammar": "/home/fred/Documents/4dt902/a1/examples/Exams/exam31-10-2023/exam.g4",
+                    "input": "/home/fred/Documents/4dt902/a1/examples/Exams/exam31-10-2023/code2.ofp",
+                    "visualParseTree": true
+                }
+            ]
+        },
+        "java.project.referencedLibraries": [
+            "/home/fred/Documents/jars/antlr4-4.13.1.jar",
+            "/home/fred/Documents/jars/antlr4-runtime-4.13.1.jar",
+            "/home/fred/Documents/jars/org.abego.treelayout.core-1.0.3.jar"
+        ]
+    }
+}
