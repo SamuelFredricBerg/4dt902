@@ -1,5 +1,7 @@
 package ofp;
 
-public class PrintListener {
+import generated.OFPBaseListener;
+
+public class PrintListener extends OFPBaseListener {
 
 }
