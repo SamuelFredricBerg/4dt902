@@ -6,6 +6,11 @@ import generated.OFPBaseVisitor;
 
 public class PrintVisitor extends OFPBaseVisitor<Object> {
     // ... One method for each non-terminal type
+    @Override
+    public Object visitExpr(generated.OFPParser.ExprContext ctx) {
+        return visitAllChildren(ctx);
+    }
+
     public ParseTree visitAllChildren(ParseTree node) {
         System.out.println(node.getClass().getName() + ": " + node.getChildCount());
 
