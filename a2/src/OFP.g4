@@ -19,21 +19,34 @@ funcDecl
     : (TYPE | 'void') ID '(' paramList? ')' block
     ;
 
+block
+    : '{' stmt* '}'
+    ;
+
+paramList
+    : TYPE ID (',' TYPE ID)*
+    ;
+
+argList
+    : expr (',' expr)*
+    ;
+
 stmt
-    : print         # PrintStmt
-    | callFunc ';'  # FuncCallStmt
-    | assign        # AssignStmt
-    | varDecl       # VarDeclStmt
-    | if            # IfStmt
-    | while         # WhileStmt
-    | return        # ReturnStmt
+    : ('print' | 'println') '(' expr ')' ';'    # PrintStmt
+    | ID '(' argList? ')' ';'                   # FuncCallStmt
+    | ID ('[' expr ']')? '=' expr ';'           # AssignStmt
+    | TYPE ID ('=' expr)? ';'                   # VarDeclStmt
+    | 'if' '(' expr ')' (block | stmt)
+    ('else' (block | stmt))?                    # IfStmt
+    | 'while' '(' expr ')' (block | stmt)       # WhileStmt
+    | 'return' expr? ';'                        # ReturnStmt
     ;
 
 expr
     : '{' argList? '}'          # ArrayInitExpr
     | expr '[' expr ']'         # ArrayAccessExpr
     | expr '.length'            # ArrayLengthExpr
-    | callFunc                  # FuncCallExpr
+    | ID '(' argList? ')'       # FuncCallExpr
     | '(' expr ')'              # ParenExpr
     | '-' expr                  # UnaryExpr
     | expr ('*' | '/') expr     # MulExpr
@@ -47,47 +60,6 @@ expr
     | CHAR
     | STRING
     | ID)                       # AtomicExpr
-    ;
-
-block
-    : '{' stmt* '}'
-    ;
-
-callFunc
-    : ID '(' argList? ')'
-    ;
-
-paramList
-    : TYPE ID (',' TYPE ID)*
-    ;
-
-argList
-    : expr (',' expr)*
-    ;
-
-print
-    : ('print' | 'println') '(' expr ')' ';'
-    ;
-
-assign
-    : ID ('[' expr ']')? '=' expr ';'
-    ;
-
-varDecl
-    : TYPE ID ('=' expr)? ';'
-    ;
-
-return
-    : 'return' expr? ';'
-    ;
-
-if
-    : 'if' '(' expr ')' (block | stmt)
-    ('else' (block | stmt))?
-    ;
-
-while
-    : 'while' '(' expr ')' (block | stmt)
     ;
 
 // Lexer Rules

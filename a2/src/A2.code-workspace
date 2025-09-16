@@ -23,7 +23,7 @@
                     "request": "launch",
                     "name": "Debug A2",
                     "grammar": "/home/fred/Documents/4dt902/a2/src/OFP.g4",
-                    "input": "/home/fred/Documents/4dt902/a2/src/test/test.ofp",
+                    "input": "/home/fred/Documents/4dt902/a2/src/test/hellProgram.ofp",
                     "visualParseTree": true
                 }
             ]
