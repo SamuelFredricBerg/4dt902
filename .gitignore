@@ -2,3 +2,4 @@ reading/
 ANTLR_Exercise.pdf
 .antlr/
 generated/
+.vscode/
