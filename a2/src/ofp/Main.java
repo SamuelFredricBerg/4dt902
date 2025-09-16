@@ -42,5 +42,10 @@ public class Main {
         // Display tree
         Trees.inspect(root, parser);
 
+        // // Indented tree print using a custom listener
+        // ParseTreeWalker walker = new ParseTreeWalker();
+        // PrintListener printListener = new PrintListener(parser);
+        // walker.walk(printListener, root);
+
     }
 }

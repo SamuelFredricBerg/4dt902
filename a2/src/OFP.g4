@@ -19,26 +19,14 @@ funcDecl
     : (TYPE | 'void') ID '(' paramList? ')' block
     ;
 
-callFunc
-    : ID '(' argList? ')'
-    ;
-
-paramList
-    : TYPE ID (',' TYPE ID)*
-    ;
-
-argList
-    : expr (',' expr)*
-    ;
-
 stmt
-    : printStmt
-    | callFunc ';'
-    | assignStmt
-    | declStmt
-    | ifElseStmt
-    | whileStmt
-    | returnStmt
+    : print         # printStmt
+    | callFunc ';'  # funcCallStmt
+    | assign        # assignStmt
+    | decl          # declStmt
+    | ifElse        # ifElseStmt
+    | while         # whileStmt
+    | return        # returnStmt
     ;
 
 expr
@@ -65,28 +53,40 @@ block
     : '{' stmt* '}'
     ;
 
-printStmt
+callFunc
+    : ID '(' argList? ')'
+    ;
+
+paramList
+    : TYPE ID (',' TYPE ID)*
+    ;
+
+argList
+    : expr (',' expr)*
+    ;
+
+print
     : ('print' | 'println') '(' expr ')' ';'
     ;
 
-assignStmt
+assign
     : ID ('[' expr ']')? '=' expr ';'
     ;
 
-declStmt
+decl
     : TYPE ID ('=' expr)? ';'
     ;
 
-returnStmt
+return
     : 'return' expr? ';'
     ;
 
-ifElseStmt
+ifElse
     : 'if' '(' expr ')' (block | stmt)
     ('else' (block | stmt))?
     ;
 
-whileStmt
+while
     : 'while' '(' expr ')' (block | stmt)
     ;
 
