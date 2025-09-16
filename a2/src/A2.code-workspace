@@ -10,7 +10,7 @@
             "visualParseTreeClustered": false
         },
         "antlr4.generation": {
-            "outputDir": "/home/fred/Documents/4dt902/a1/src/generated",
+            "outputDir": "/home/fred/Documents/4dt902/a2/src/generated",
             "mode": "external",
             "language": "Java",
             "listeners": true,
@@ -21,9 +21,9 @@
                 {
                     "type": "antlr-debug",
                     "request": "launch",
-                    "name": "Debug A1",
-                    "grammar": "/home/fred/Documents/4dt902/a1/src/sb224sc_A1.g4",
-                    "input": "/home/fred/Documents/4dt902/a1/src/test/hellProgram.ofp",
+                    "name": "Debug A2",
+                    "grammar": "/home/fred/Documents/4dt902/a2/src/OFP.g4",
+                    "input": "/home/fred/Documents/4dt902/a2/src/test/test.ofp",
                     "visualParseTree": true
                 }
             ]

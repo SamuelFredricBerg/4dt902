@@ -1,4 +1,4 @@
-grammar sb224sc_A2;
+grammar OFP;
 
 @header {
     package generated;
@@ -7,7 +7,7 @@ grammar sb224sc_A2;
 
 // Parser Rules
 
-start
+program
     : funcDecl*  main funcDecl* EOF
     ;
 
@@ -42,23 +42,23 @@ stmt
     ;
 
 expr
-    : '{' argList? '}'
-    | expr '[' expr ']'
-    | expr '.length'
-    | callFunc
-    | condition
-    | '-' expr
-    | expr ('*' | '/') expr
-    | expr ('+' | '-') expr
-    | expr ('<' | '>') expr
-    | expr '==' expr
-    | 'new' TYPE '[' expr ']'
+    : '{' argList? '}'          # arrayInit
+    | expr '[' expr ']'         # arrayAccess
+    | expr '.length'            # arrayLength
+    | callFunc                  # functionCall
+    | '(' expr ')'              # parentheses
+    | '-' expr                  # unaryOp
+    | expr ('*' | '/') expr     # mulDivOp
+    | expr ('+' | '-') expr     # addSubOp
+    | expr ('<' | '>') expr     # relOp
+    | expr '==' expr            # equalityOp
+    | 'new' TYPE '[' expr ']'   # arrayCreation
     | (INT
     | FLOAT
     | BOOLEAN
     | CHAR
     | STRING
-    | ID)
+    | ID)                       # atomic
     ;
 
 block
@@ -66,7 +66,7 @@ block
     ;
 
 printStmt
-    : ('print' | 'println') condition ';'
+    : ('print' | 'println') '(' expr ')' ';'
     ;
 
 assignStmt
@@ -82,16 +82,12 @@ returnStmt
     ;
 
 ifElseStmt
-    : 'if' condition (block | stmt)
+    : 'if' '(' expr ')' (block | stmt)
     ('else' (block | stmt))?
     ;
 
 whileStmt
-    : 'while' condition (block | stmt)
-    ;
-
-condition
-    : '(' expr ')'
+    : 'while' '(' expr ')' (block | stmt)
     ;
 
 // Lexer Rules
@@ -118,11 +114,11 @@ FLOAT
     ;
 
 CHAR
-    : '\'' ([a-zA-Z!.?,=:() ]) '\''
+    : '\'' [a-zA-Z!.?,=:() ] '\'' // TODO: Check if 'epsilon' is allowed epsilon meaning empty
     ;
 
 STRING
-    : '"' ([a-zA-Z!.?,=:() ])* '"'
+    : '"' [a-zA-Z!.?,=:() ]* '"'
     ;
 
 ID
