@@ -70,20 +70,6 @@ public class SymbolTableListener extends OFPBaseListener {
                 for (int i = 0; i < ctx.TYPE().size(); i++) {
                     String paramName = ctx.ID(i + 1).getText();
                     handleFunctionParameters(ctx, functionName, existingSymbol, paramName, i);
-                    // String paramTypeStr = ctx.TYPE(i).getText();
-                    // OFPType paramType = OFPType.getTypeFor(paramTypeStr);
-                    // Symbol paramSymbol = new Symbol(paramName, paramType);
-
-                    // Symbol existingParam = currentScope.localResolve(paramName);
-                    // if (existingParam != null && !(existingSymbol instanceof FunctionSymbol)) {
-                    // System.err.println("Error: Parameter '" + paramName + "' is already declared
-                    // in function '"
-                    // + functionName + "'.");
-                    // return;
-                    // }
-
-                    // currentScope.define(paramSymbol);
-                    // currentFunctionSymbol.addParameter(paramSymbol);
                 }
             }
         } else {
@@ -91,20 +77,6 @@ public class SymbolTableListener extends OFPBaseListener {
                 for (int i = 1; i < ctx.TYPE().size(); i++) {
                     String paramName = ctx.ID(i).getText();
                     handleFunctionParameters(ctx, functionName, existingSymbol, paramName, i);
-                    // String paramTypeStr = ctx.TYPE(i).getText();
-                    // OFPType paramType = OFPType.getTypeFor(paramTypeStr);
-                    // Symbol paramSymbol = new Symbol(paramName, paramType);
-
-                    // Symbol existingParam = currentScope.localResolve(paramName);
-                    // if (existingParam != null && !(existingSymbol instanceof FunctionSymbol)) {
-                    // System.err.println("Error: Parameter '" + paramName + "' is already declared
-                    // in function '"
-                    // + functionName + "'.");
-                    // return;
-                    // }
-
-                    // currentScope.define(paramSymbol);
-                    // currentFunctionSymbol.addParameter(paramSymbol);
                 }
             }
         }
