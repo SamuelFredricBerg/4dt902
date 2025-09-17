@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.antlr.v4.runtime.BufferedTokenStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.gui.Trees;
 
 import generated.OFPLexer;
@@ -40,12 +42,20 @@ public class Main {
         System.out.println("\nParsing completed");
 
         // Display tree
-        Trees.inspect(root, parser);
+        // Trees.inspect(root, parser); // Uncomment to display tree
 
-        // // Indented tree print using a custom listener
-        // ParseTreeWalker walker = new ParseTreeWalker();
-        // PrintListener printListener = new PrintListener(parser);
-        // walker.walk(printListener, root);
+        // Indented tree print using a custom listener
+        ParseTreeWalker walkerTest = new ParseTreeWalker();
+        PrintListener printListener = new PrintListener();
+        walkerTest.walk(printListener, root);
 
+        // Symbol table construction using a listener ... (This lecture)
+        ParseTreeWalker walker = new ParseTreeWalker();
+        SymbolTableListener stListener = new SymbolTableListener();
+        walker.walk(stListener, root);
+
+        stListener.printSymbolTable();
+
+        ParseTreeProperty<Scope> scopes = stListener.getScope();
     }
 }

@@ -17,6 +17,6 @@ public class PrintListener extends OFPBaseListener {
     }
 
     public void printCurrent(ParserRuleContext ctx) {
-        System.out.println("  ".repeat(ctx.depth()) + ctx.getClass().getSimpleName());
+        System.out.println("    ".repeat(ctx.depth()) + ctx.getClass().getSimpleName());
     }
 }
