@@ -40,7 +40,38 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
     @Override
     public OFPType visitFuncCall(OFPParser.FuncCallContext ctx) {
-        return null; // funcSym.getReturnType();
+        String functionName = ctx.ID().getText();
+        Symbol functionSymbol = currentScope.resolve(functionName);
+
+        if (functionSymbol == null || !(functionSymbol instanceof FunctionSymbol)) {
+            System.err.println("Error: Function '" + functionName + "' is not declared.");
+            return OFPType.ERROR;
+        }
+
+        FunctionSymbol funcSym = (FunctionSymbol) functionSymbol;
+        if (ctx.expr().size() != funcSym.getParameters().size()) {
+            System.err.println("Error: Function '" + functionName + "' expects " + funcSym.getParameters().size()
+                    + " arguments, but " + ctx.expr().size() + " were provided.");
+            return OFPType.ERROR;
+        }
+
+        for (int i = 0; i < ctx.expr().size(); i++) {
+            OFPType argType = visit(ctx.expr(i));
+            OFPType paramType = funcSym.getParameters().get(i).getType();
+
+            if (argType.equals(OFPType.VOID)) {
+                System.err.println("Error: Cannot pass void as an argument to function '" + functionName + "'.");
+                return OFPType.ERROR;
+            }
+
+            if (!argType.equals(paramType)) {
+                System.err.println("Error: Argument type mismatch in function '" + functionName + "'. Expected '"
+                        + paramType + "', but got '" + argType + "'.");
+                return OFPType.ERROR;
+            }
+        }
+
+        return funcSym.getReturnType();
     }
 
     @Override
