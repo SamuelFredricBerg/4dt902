@@ -57,5 +57,15 @@ public class Main {
         stListener.printSymbolTable();
 
         ParseTreeProperty<Scope> scopes = stListener.getScope();
+
+        // Symbol reference checking using a listener ... (This lecture)
+        CheckRefListener checkRefListener = new CheckRefListener(scopes, stListener.getGlobalScope());
+        walker.walk(checkRefListener, root);
+
+        checkRefListener.reportErrors();
+
+        // Type checking using a visitor ... (Next lecture)
+        TypeCheckingVisitor tcVisitor = new TypeCheckingVisitor(scopes);
+        tcVisitor.visit(root);
     }
 }

@@ -19,13 +19,18 @@ funcDecl
     : (TYPE | 'void') ID '(' (TYPE ID (',' TYPE ID)*)? ')' block
     ;
 
+funcCall
+    : ID '(' (expr (',' expr)*)? ')'
+    ;
+
+
 block
     : '{' stmt* '}'
     ;
 
 stmt
     : ('print' | 'println') '(' expr ')' ';'    # PrintStmt
-    | ID '(' (expr (',' expr)*)? ')' ';'        # FuncCallStmt
+    | funcCall ';'                              # FuncCallStmt
     | ID ('[' expr ']')? '=' expr ';'           # AssignStmt
     | TYPE ID ('=' expr)? ';'                   # VarDeclStmt
     | 'if' '(' expr ')' (block | stmt)
@@ -38,7 +43,7 @@ expr
     : '{' (expr (',' expr)*)? '}'       # ArrayInitExpr
     | expr '[' expr ']'                 # ArrayAccessExpr
     | expr '.length'                    # ArrayLengthExpr
-    | ID '(' (expr (',' expr)*)? ')'    # FuncCallExpr
+    | funcCall                          # FuncCallExpr
     | '(' expr ')'                      # ParenExpr
     | '-' expr                          # UnaryExpr
     | expr ('*' | '/') expr             # MulExpr
@@ -46,12 +51,12 @@ expr
     | expr ('<' | '>') expr             # RelExpr
     | expr '==' expr                    # EqExpr
     | 'new' TYPE '[' expr ']'           # ArrayCreationExpr
-    | (INT
-    | FLOAT
-    | BOOLEAN
-    | CHAR
-    | STRING
-    | ID)                               # AtomicExpr
+    | INT                               # IntExpr
+    | FLOAT                             # FloatExpr
+    | BOOLEAN                           # BoolExpr
+    | CHAR                              # CharExpr
+    | STRING                            # StringExpr
+    | ID                                # IDExpr
     ;
 
 // Lexer Rules

@@ -80,12 +80,56 @@ public class SymbolTableListener extends OFPBaseListener {
                 }
             }
         }
+
+        scopes.put(ctx, currentScope);
     }
 
     @Override
     public void exitFuncDecl(OFPParser.FuncDeclContext ctx) {
         currentScope = globalScope;
         currentFunctionSymbol = null;
+    }
+
+    @Override
+    public void enterVarDeclStmt(OFPParser.VarDeclStmtContext ctx) {
+        String varName = ctx.ID().getText();
+        OFPType varType = OFPType.getTypeFor(ctx.TYPE().getText());
+
+        Symbol existingSymbol = currentScope.localResolve(varName);
+        if (existingSymbol != null && !(existingSymbol instanceof FunctionSymbol)) {
+            System.err.println("Error: Variable '" + varName + "' is already declared within this scope.");
+            return;
+        }
+
+        Symbol varSymbol = new Symbol(varName, varType);
+
+        currentScope.define(varSymbol);
+    }
+
+    @Override
+    public void enterBlock(OFPParser.BlockContext ctx) {
+        Scope blockScope = new Scope(currentScope);
+        if (currentScope.getFunctionSymbol() != null) {
+            blockScope.setFunctionSymbol(currentScope.getFunctionSymbol());
+        }
+
+        currentScope.addChildScope(blockScope);
+        currentScope = blockScope;
+        scopes.put(ctx, blockScope);
+    }
+
+    @Override
+    public void exitBlock(OFPParser.BlockContext ctx) {
+        if (currentScope != globalScope) {
+            currentScope = currentScope.getEnclosingScope();
+        }
+    }
+
+    @Override
+    public void enterReturnStmt(OFPParser.ReturnStmtContext ctx) {
+        if (currentFunctionSymbol != null) {
+            scopes.put(ctx, currentScope);
+        }
     }
 
     private void handleFunctionParameters(OFPParser.FuncDeclContext ctx, String functionName, Symbol existingSymbol,
