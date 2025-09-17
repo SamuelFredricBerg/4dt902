@@ -28,7 +28,7 @@ public class Main {
         System.out.println("Reading test program from: " + testProgram);
 
         // Parse input program
-        System.out.println("Parsing started");
+        System.out.println("\nParsing started");
         OFPParser parser = null;
         OFPParser.ProgramContext root = null;
         try {
@@ -39,12 +39,13 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Parsing completed");
+        System.out.println("\nParsing completed");
 
         // Display tree
         // Trees.inspect(root, parser); // Uncomment to display tree
 
         // Indented tree print using a custom listener
+        System.out.println("\n===== Print Listener =====");
         ParseTreeWalker walkerTest = new ParseTreeWalker();
         PrintListener printListener = new PrintListener();
         walkerTest.walk(printListener, root);

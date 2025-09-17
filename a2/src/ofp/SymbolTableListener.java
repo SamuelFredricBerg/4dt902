@@ -158,7 +158,7 @@ public class SymbolTableListener extends OFPBaseListener {
     }
 
     public void printSymbolTable() {
-        System.out.println("===== Symbol Table =====");
+        System.out.println("\n===== Symbol Table =====");
         printScope(globalScope, 0);
     }
 
