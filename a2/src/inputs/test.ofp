@@ -1,4 +1,4 @@
-void main() {
+void test() {
     int n = 14.17; # assign float to an int
     float pi = 314; # assign int to a float
     float x = 1.22 + 7; # float + int
@@ -6,20 +6,7 @@ void main() {
     float[] fArr = {1.2,2.4,3.6,4.8,6}; # Final value int
 }
 
-void test(int a, int b) {
+void main(int a, int b) {
     int c;
     int d;
-}
-
-int testInt(int a, int b) {
-    int g;
-    a = a + b;
-    while (a > b) {
-        b = a + 1;
-        int c;
-        if (b < a) {
-            b = b + 1;
-            int d;
-        }
-    }
 }
