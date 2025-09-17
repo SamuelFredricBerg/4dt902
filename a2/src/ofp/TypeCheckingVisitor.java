@@ -110,6 +110,9 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
     @Override
     public OFPType visitBlock(OFPParser.BlockContext ctx) {
+        currentScope = scopes.get(ctx);
+        super.visitBlock(ctx);
+        currentScope = currentScope.getEnclosingScope();
         return null;
     }
 
