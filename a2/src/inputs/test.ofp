@@ -5,3 +5,8 @@ void main() {
     int[] iArr = {1,2,3,4,5,6,7.5}; # Final value float
     float[] fArr = {1.2,2.4,3.6,4.8,6}; # Final value int
 }
+
+void test(int a, int b) {
+    int c;
+    int d;
+}

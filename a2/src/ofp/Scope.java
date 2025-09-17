@@ -13,9 +13,6 @@ public class Scope {
 
     public Scope(Scope enclosingScope) {
         this.enclosingScope = enclosingScope;
-        if (enclosingScope != null) {
-            enclosingScope.addChildScope(this);
-        }
     }
 
     public Scope getEnclosingScope() {
