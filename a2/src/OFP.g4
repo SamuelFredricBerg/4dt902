@@ -40,23 +40,23 @@ stmt
     ;
 
 expr
-    : '{' (expr (',' expr)*)? '}'       # ArrayInitExpr
-    | expr '[' expr ']'                 # ArrayAccessExpr
-    | expr '.length'                    # ArrayLengthExpr
-    | funcCall                          # FuncCallExpr
-    | '(' expr ')'                      # ParenExpr
-    | '-' expr                          # UnaryExpr
-    | expr ('*' | '/') expr             # MulExpr
-    | expr ('+' | '-') expr             # AddExpr
-    | expr ('<' | '>') expr             # RelExpr
-    | expr '==' expr                    # EqExpr
-    | 'new' TYPE '[' expr ']'           # ArrayCreationExpr
-    | INT                               # IntExpr
-    | FLOAT                             # FloatExpr
-    | BOOLEAN                           # BoolExpr
-    | CHAR                              # CharExpr
-    | STRING                            # StringExpr
-    | ID                                # IDExpr
+    : '{' (expr (',' expr)*)? '}'   # ArrayInitExpr
+    | expr '[' expr ']'             # ArrayAccessExpr
+    | expr '.length'                # ArrayLengthExpr
+    | funcCall                      # FuncCallExpr
+    | '(' expr ')'                  # ParenExpr
+    | '-' expr                      # UnaryExpr
+    | expr ('*' | '/') expr         # MulExpr
+    | expr ('+' | '-') expr         # AddExpr
+    | expr ('<' | '>') expr         # RelExpr
+    | expr '==' expr                # EqExpr
+    | 'new' TYPE '[' expr ']'       # ArrayCreationExpr
+    | INT                           # IntExpr
+    | FLOAT                         # FloatExpr
+    | BOOLEAN                       # BoolExpr
+    | CHAR                          # CharExpr
+    | STRING                        # StringExpr
+    | ID                            # IDExpr
     ;
 
 // Lexer Rules

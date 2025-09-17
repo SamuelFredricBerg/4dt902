@@ -1,59 +1,59 @@
 package ofp;
 
 public class OFPType {
-    public static final OFPType intType = new OFPType("int");
-    public static final OFPType intArrType = new OFPType("int[]");
+    public static final OFPType INT = new OFPType("int");
+    public static final OFPType INT_ARRAY = new OFPType("int[]");
 
-    public static final OFPType floatType = new OFPType("float");
-    public static final OFPType floatArrType = new OFPType("float[]");
+    public static final OFPType FLOAT = new OFPType("float");
+    public static final OFPType FLOAT_ARRAY = new OFPType("float[]");
 
-    public static final OFPType boolType = new OFPType("bool");
+    public static final OFPType BOOLEAN = new OFPType("bool");
 
-    public static final OFPType stringType = new OFPType("string");
+    public static final OFPType STRING = new OFPType("string");
 
-    public static final OFPType charType = new OFPType("char");
-    public static final OFPType charArrType = new OFPType("char[]");
+    public static final OFPType CHAR = new OFPType("char");
+    public static final OFPType CHAR_ARRAY = new OFPType("char[]");
 
     // Eventually, we will need to generate bytecode for Java main() method
-    public static final OFPType argsType = new OFPType("String[]");
+    public static final OFPType ARGS = new OFPType("String[]");
 
-    public static final OFPType voidType = new OFPType("void");
+    public static final OFPType VOID = new OFPType("void");
 
-    public static final OFPType errorType = new OFPType("error");
+    public static final OFPType ERROR = new OFPType("error");
 
     public static OFPType getTypeFor(String typeName) {
         // typeName = typeName.strip();
 
         switch (typeName) {
             case "int":
-                return intType;
+                return INT;
 
             case "int[]":
-                return intArrType;
+                return INT_ARRAY;
 
             case "float":
-                return floatType;
+                return FLOAT;
 
             case "float[]":
-                return floatArrType;
+                return FLOAT_ARRAY;
 
             case "bool":
-                return boolType;
+                return BOOLEAN;
 
             case "string":
-                return stringType;
+                return STRING;
 
             case "char":
-                return charType;
+                return CHAR;
 
             case "char[]":
-                return charArrType;
+                return CHAR_ARRAY;
 
             case "string[]":
-                return argsType;
+                return ARGS;
 
             case "void":
-                return voidType;
+                return VOID;
 
             default:
                 return null;

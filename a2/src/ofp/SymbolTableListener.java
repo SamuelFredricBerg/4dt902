@@ -26,7 +26,7 @@ public class SymbolTableListener extends OFPBaseListener {
             System.err.println("Error: 'main' function is already defined.");
             return;
         }
-        currentFunctionSymbol = new FunctionSymbol("main", OFPType.voidType);
+        currentFunctionSymbol = new FunctionSymbol("main", OFPType.VOID);
         globalScope.define(currentFunctionSymbol);
 
         currentScope = new Scope(globalScope);
@@ -65,7 +65,7 @@ public class SymbolTableListener extends OFPBaseListener {
         currentScope.addChildScope(functionScope);
         currentScope = functionScope;
 
-        if (returnType.equals(OFPType.voidType)) {
+        if (returnType.equals(OFPType.VOID)) {
             if (ctx.TYPE().size() > 0) {
                 for (int i = 0; i < ctx.TYPE().size(); i++) {
                     String paramName = ctx.ID(i + 1).getText();
