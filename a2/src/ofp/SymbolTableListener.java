@@ -5,8 +5,6 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import generated.OFPBaseListener;
 import generated.OFPParser;
 
-//* Note: Only one of the SymbolTableListener.java and SymbolTableVisitor.java needs to be implemented.
-
 public class SymbolTableListener extends OFPBaseListener {
     private Scope currentScope;
     private Scope globalScope;
@@ -44,7 +42,95 @@ public class SymbolTableListener extends OFPBaseListener {
 
     @Override
     public void enterFuncDecl(OFPParser.FuncDeclContext ctx) {
+        String functionName = ctx.ID(0).getText();
+        String returnTypeStr = ctx.getChild(0).getText();
+        OFPType returnType = OFPType.getTypeFor(returnTypeStr);
 
+        if (!(ctx.getChild(ctx.getChildCount() - 1) instanceof OFPParser.BlockContext)) {
+            System.err.println("Error: Invalid function declaration for '" + functionName
+                    + "'. Expected a function body enclosed in '{ }'.");
+            return;
+        }
+
+        Symbol existingSymbol = currentScope.resolve(functionName);
+        if (existingSymbol instanceof FunctionSymbol) {
+            System.err.println("Error: Function '" + functionName + "' is already declared within this scope.");
+            return;
+        }
+
+        currentFunctionSymbol = new FunctionSymbol(functionName, returnType);
+        currentScope.define(currentFunctionSymbol);
+
+        Scope functionScope = new Scope(currentScope);
+        currentScope.addChildScope(functionScope);
+        currentScope = functionScope;
+
+        if (returnType.equals(OFPType.voidType)) {
+            if (ctx.TYPE().size() > 0) {
+                for (int i = 0; i < ctx.TYPE().size(); i++) {
+                    String paramName = ctx.ID(i + 1).getText();
+                    handleFunctionParameters(ctx, functionName, existingSymbol, paramName, i);
+                    // String paramTypeStr = ctx.TYPE(i).getText();
+                    // OFPType paramType = OFPType.getTypeFor(paramTypeStr);
+                    // Symbol paramSymbol = new Symbol(paramName, paramType);
+
+                    // Symbol existingParam = currentScope.localResolve(paramName);
+                    // if (existingParam != null && !(existingSymbol instanceof FunctionSymbol)) {
+                    // System.err.println("Error: Parameter '" + paramName + "' is already declared
+                    // in function '"
+                    // + functionName + "'.");
+                    // return;
+                    // }
+
+                    // currentScope.define(paramSymbol);
+                    // currentFunctionSymbol.addParameter(paramSymbol);
+                }
+            }
+        } else {
+            if (ctx.TYPE().size() > 1) {
+                for (int i = 1; i < ctx.TYPE().size(); i++) {
+                    String paramName = ctx.ID(i).getText();
+                    handleFunctionParameters(ctx, functionName, existingSymbol, paramName, i);
+                    // String paramTypeStr = ctx.TYPE(i).getText();
+                    // OFPType paramType = OFPType.getTypeFor(paramTypeStr);
+                    // Symbol paramSymbol = new Symbol(paramName, paramType);
+
+                    // Symbol existingParam = currentScope.localResolve(paramName);
+                    // if (existingParam != null && !(existingSymbol instanceof FunctionSymbol)) {
+                    // System.err.println("Error: Parameter '" + paramName + "' is already declared
+                    // in function '"
+                    // + functionName + "'.");
+                    // return;
+                    // }
+
+                    // currentScope.define(paramSymbol);
+                    // currentFunctionSymbol.addParameter(paramSymbol);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void exitFuncDecl(OFPParser.FuncDeclContext ctx) {
+        currentScope = globalScope;
+        currentFunctionSymbol = null;
+    }
+
+    private void handleFunctionParameters(OFPParser.FuncDeclContext ctx, String functionName, Symbol existingSymbol,
+            String paramName, int i) {
+        String paramTypeStr = ctx.TYPE(i).getText();
+        OFPType paramType = OFPType.getTypeFor(paramTypeStr);
+        Symbol paramSymbol = new Symbol(paramName, paramType);
+
+        Symbol existingParam = currentScope.localResolve(paramName);
+        if (existingParam != null && !(existingSymbol instanceof FunctionSymbol)) {
+            System.err.println("Error: Parameter '" + paramName + "' is already declared in function '"
+                    + functionName + "'.");
+            return;
+        }
+
+        currentScope.define(paramSymbol);
+        currentFunctionSymbol.addParameter(paramSymbol);
     }
 
     public ParseTreeProperty<Scope> getScope() {

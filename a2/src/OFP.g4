@@ -16,24 +16,16 @@ main
     ;
 
 funcDecl
-    : (TYPE | 'void') ID '(' paramList? ')' block
+    : (TYPE | 'void') ID '(' (TYPE ID (',' TYPE ID)*)? ')' block
     ;
 
 block
     : '{' stmt* '}'
     ;
 
-paramList
-    : TYPE ID (',' TYPE ID)*
-    ;
-
-argList
-    : expr (',' expr)*
-    ;
-
 stmt
     : ('print' | 'println') '(' expr ')' ';'    # PrintStmt
-    | ID '(' argList? ')' ';'                   # FuncCallStmt
+    | ID '(' (expr (',' expr)*)? ')' ';'        # FuncCallStmt
     | ID ('[' expr ']')? '=' expr ';'           # AssignStmt
     | TYPE ID ('=' expr)? ';'                   # VarDeclStmt
     | 'if' '(' expr ')' (block | stmt)
@@ -43,23 +35,23 @@ stmt
     ;
 
 expr
-    : '{' argList? '}'          # ArrayInitExpr
-    | expr '[' expr ']'         # ArrayAccessExpr
-    | expr '.length'            # ArrayLengthExpr
-    | ID '(' argList? ')'       # FuncCallExpr
-    | '(' expr ')'              # ParenExpr
-    | '-' expr                  # UnaryExpr
-    | expr ('*' | '/') expr     # MulExpr
-    | expr ('+' | '-') expr     # AddExpr
-    | expr ('<' | '>') expr     # RelExpr
-    | expr '==' expr            # EqExpr
-    | 'new' TYPE '[' expr ']'   # ArrayCreationExpr
+    : '{' (expr (',' expr)*)? '}'       # ArrayInitExpr
+    | expr '[' expr ']'                 # ArrayAccessExpr
+    | expr '.length'                    # ArrayLengthExpr
+    | ID '(' (expr (',' expr)*)? ')'    # FuncCallExpr
+    | '(' expr ')'                      # ParenExpr
+    | '-' expr                          # UnaryExpr
+    | expr ('*' | '/') expr             # MulExpr
+    | expr ('+' | '-') expr             # AddExpr
+    | expr ('<' | '>') expr             # RelExpr
+    | expr '==' expr                    # EqExpr
+    | 'new' TYPE '[' expr ']'           # ArrayCreationExpr
     | (INT
     | FLOAT
     | BOOLEAN
     | CHAR
     | STRING
-    | ID)                       # AtomicExpr
+    | ID)                               # AtomicExpr
     ;
 
 // Lexer Rules
@@ -111,5 +103,3 @@ LINE_COMMENT
 BLOCK_COMMENT
     : '/*' .*? '*/' -> skip
     ;
-
-
