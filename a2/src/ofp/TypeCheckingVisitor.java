@@ -131,7 +131,40 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
     @Override
     public OFPType visitVarDeclStmt(OFPParser.VarDeclStmtContext ctx) {
-        return null; // varType;
+        String varName = ctx.ID().getText();
+        OFPType exprType;
+        OFPType varType = OFPType.getTypeFor(ctx.TYPE().getText());
+
+        if (ctx.expr() != null) {
+            exprType = visit(ctx.expr());
+
+            // ? Needed??? Thinking about int a = f(); where f() is void.
+            if (exprType.equals(OFPType.VOID)) {
+                System.err.println("Error: Cannot assign void type to variable '" + varName + "'.");
+                return OFPType.ERROR;
+            }
+
+            if ((varType.equals(OFPType.INT_ARRAY) || varType.equals(OFPType.FLOAT_ARRAY)
+                    || varType.equals(OFPType.CHAR_ARRAY))
+                    && (exprType.equals(OFPType.INT) || exprType.equals(OFPType.FLOAT)
+                            || exprType.equals(OFPType.CHAR))) {
+
+                if (!(!(varType.equals(OFPType.INT_ARRAY) && exprType.equals(OFPType.INT))
+                        || !(varType.equals(OFPType.FLOAT_ARRAY) && exprType.equals(OFPType.FLOAT))
+                        || !(varType.equals(OFPType.CHAR_ARRAY) && exprType.equals(OFPType.CHAR)))) {
+                    System.err.println("Error: Type mismatch in array assignment. Expected '" + varType + "' but got '"
+                            + exprType + "'.");
+                    return OFPType.ERROR;
+                }
+
+            } else if (!varType.equals(exprType)) {
+                System.err.println(
+                        "Error: Type mismatch in assignment. Expected '" + varType + "' but got '" + exprType + "'.");
+                return OFPType.ERROR;
+            }
+        }
+
+        return varType;
     }
 
     @Override
