@@ -118,7 +118,15 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
     @Override
     public OFPType visitIDExpr(OFPParser.IDExprContext ctx) {
-        return null; // varSymbol.getType();
+        String varName = ctx.ID().getText();
+        Symbol varSymbol = currentScope.resolve(varName);
+
+        if (varSymbol == null) {
+            System.err.println("Error: Variable '" + varName + "' not declared.");
+            return OFPType.ERROR;
+        }
+
+        return varSymbol.getType();
     }
 
     @Override
