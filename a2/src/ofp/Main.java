@@ -28,7 +28,7 @@ public class Main {
         System.out.println("Reading test program from: " + testProgram);
 
         // Parse input program
-        System.out.println("\nParsing started");
+        System.out.println("Parsing started");
         OFPParser parser = null;
         OFPParser.ProgramContext root = null;
         try {
@@ -39,7 +39,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("\nParsing completed");
+        System.out.println("Parsing completed");
 
         // Display tree
         // Trees.inspect(root, parser); // Uncomment to display tree
