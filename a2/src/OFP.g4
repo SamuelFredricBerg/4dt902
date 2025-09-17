@@ -83,7 +83,7 @@ FLOAT
     ;
 
 CHAR
-    : '\'' [a-zA-Z!.?,=:() ] '\'' // TODO: Check if '' is allowed
+    : '\'' [a-zA-Z!.?,=:() ]? '\''
     ;
 
 STRING
