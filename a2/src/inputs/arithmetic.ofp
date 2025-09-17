@@ -11,10 +11,4 @@ void main() {
 	float b = a+2.0;
 	float c = a+b*3.0;
 	println(c);   # 9.062
-
-	int d; int e; int f; // My own addition test
-	d = -5;
-	e = -8-d;
-	f = 10+e+d;
-	println(f);	 # 2
 }
