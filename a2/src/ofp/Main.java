@@ -45,9 +45,9 @@ public class Main {
         // Trees.inspect(root, parser); // Uncomment to display tree
 
         // Indented tree print using a custom listener
-        // ParseTreeWalker walkerTest = new ParseTreeWalker();
-        // PrintListener printListener = new PrintListener();
-        // walkerTest.walk(printListener, root);
+        ParseTreeWalker walkerTest = new ParseTreeWalker();
+        PrintListener printListener = new PrintListener();
+        walkerTest.walk(printListener, root);
 
         // Symbol table construction using a listener ... (This lecture)
         ParseTreeWalker walker = new ParseTreeWalker();
