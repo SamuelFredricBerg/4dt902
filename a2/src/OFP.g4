@@ -46,8 +46,8 @@ expr
     | funcCall                      # FuncCallExpr
     | '(' expr ')'                  # ParenExpr
     | '-' expr                      # UnaryExpr
-    | expr ('*' | '/') expr         # MulExpr
-    | expr ('+' | '-') expr         # AddExpr
+    | expr ('*' | '/') expr         # MultExpr
+    | expr ('+' | '-') expr         # AddiExpr
     | expr ('<' | '>') expr         # RelExpr
     | expr '==' expr                # EqExpr
     | 'new' TYPE '[' expr ']'       # ArrayCreationExpr

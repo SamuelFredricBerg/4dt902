@@ -39,6 +39,116 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     }
 
     @Override
+    public OFPType visitFuncCall(OFPParser.FuncCallContext ctx) {
+        return null; // funcSym.getReturnType();
+    }
+
+    @Override
+    public OFPType visitReturnStmt(OFPParser.ReturnStmtContext ctx) {
+        return null;
+    }
+
+    @Override
+    public OFPType visitBlock(OFPParser.BlockContext ctx) {
+        return null;
+    }
+
+    @Override
+    public OFPType visitIDExpr(OFPParser.IDExprContext ctx) {
+        return null; // varSymbol.getType();
+    }
+
+    @Override
+    public OFPType visitVarDeclStmt(OFPParser.VarDeclStmtContext ctx) {
+        return null; // varType;
+    }
+
+    @Override
+    public OFPType visitAssignStmt(OFPParser.AssignStmtContext ctx) {
+        return null; // exprType;
+    }
+
+    /*
+     * More Override functions to add
+     */
+
+    @Override
+    public OFPType visitRelExpr(OFPParser.RelExprContext ctx) {
+        OFPType leftType = visit(ctx.expr(0));
+        OFPType rightType = visit(ctx.expr(1));
+
+        if (leftType.equals(OFPType.ERROR) || rightType.equals(OFPType.ERROR)) {
+            System.err.println("Error: Invalid comparison expression.");
+            return OFPType.ERROR;
+        }
+
+        if (!leftType.equals(rightType)) {
+            if (leftType.equals(OFPType.INT_ARRAY) || leftType.equals(OFPType.FLOAT_ARRAY)
+                    || leftType.equals(OFPType.CHAR_ARRAY) || leftType.equals(OFPType.STRING)
+                    || rightType.equals(OFPType.INT_ARRAY) || rightType.equals(OFPType.FLOAT_ARRAY)
+                    || rightType.equals(OFPType.CHAR_ARRAY) || rightType.equals(OFPType.STRING)) {
+                if (!(ctx.getParent() instanceof OFPParser.ArrayLengthExprContext)) {
+                    System.err.println("Error: Type mismatch in comparison. Both sides must have the same type.");
+                    return OFPType.ERROR;
+                }
+            }
+        }
+
+        if (!leftType.equals(OFPType.INT) && !leftType.equals(OFPType.FLOAT)
+                && !leftType.equals(OFPType.CHAR)) {
+            if (leftType.equals(OFPType.STRING)) {
+                if (ctx.getChild(1).getText().equals(">") || ctx.getChild(1).getText().equals("<")) {
+                    System.err.println("Error: Cannot use '>' or '<' with string type.");
+                    return OFPType.ERROR;
+                }
+            } else {
+                System.err.println("Error: Comparison operators can only be used with int, float, or char types.");
+                return OFPType.ERROR;
+            }
+        }
+
+        return OFPType.BOOLEAN;
+    }
+
+    @Override
+    public OFPType visitEqExpr(OFPParser.EqExprContext ctx) {
+        OFPType leftType = visit(ctx.expr(0));
+        OFPType rightType = visit(ctx.expr(1));
+
+        if (leftType.equals(OFPType.ERROR) || rightType.equals(OFPType.ERROR)) {
+            System.err.println("Error: Invalid equality expression.");
+            return OFPType.ERROR;
+        }
+
+        if (!leftType.equals(rightType)) {
+            if (leftType.equals(OFPType.INT_ARRAY) || leftType.equals(OFPType.FLOAT_ARRAY)
+                    || leftType.equals(OFPType.CHAR_ARRAY) || leftType.equals(OFPType.STRING)
+                    || rightType.equals(OFPType.INT_ARRAY) || rightType.equals(OFPType.FLOAT_ARRAY)
+                    || rightType.equals(OFPType.CHAR_ARRAY) || rightType.equals(OFPType.STRING)) {
+                if (!(ctx.getParent() instanceof OFPParser.ArrayLengthExprContext)) {
+                    System.err.println("Error: Type mismatch in comparison. Both sides must have the same type.");
+                    return OFPType.ERROR;
+                }
+            }
+        }
+
+        if (!leftType.equals(OFPType.INT) && !leftType.equals(OFPType.FLOAT)
+                && !leftType.equals(OFPType.CHAR)) {
+            if (leftType.equals(OFPType.STRING)) {
+                if (ctx.getChild(1).getText().equals("==")) {
+                    System.err.println("Error: Cannot use '==' with string type.");
+                    return OFPType.ERROR;
+                }
+            } else {
+                System.err.println("Error: Comparison operators can only be used with int, float, or char types.");
+                return OFPType.ERROR;
+            }
+        }
+
+        return OFPType.BOOLEAN;
+    }
+
+    @Override
     public OFPType visitIfStmt(OFPParser.IfStmtContext ctx) {
         OFPType conditionType = visit(ctx.expr());
         if (!conditionType.equals(OFPType.BOOLEAN)) {
