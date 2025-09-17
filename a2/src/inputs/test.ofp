@@ -10,3 +10,16 @@ void test(int a, int b) {
     int c;
     int d;
 }
+
+int testInt(int a, int b) {
+    int g;
+    a = a + b;
+    while (a > b) {
+        b = a + 1;
+        int c;
+        if (b < a) {
+            b = b + 1;
+            int d;
+        }
+    }
+}
