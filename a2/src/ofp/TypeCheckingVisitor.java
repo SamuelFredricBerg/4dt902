@@ -76,6 +76,35 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
     @Override
     public OFPType visitReturnStmt(OFPParser.ReturnStmtContext ctx) {
+        Scope returnScope = scopes.get(ctx);
+
+        if (returnScope == null) {
+            System.err.println("Error: 'return' statement is outside of a valid scope.");
+            return OFPType.ERROR;
+        }
+
+        FunctionSymbol currentFunction = returnScope.getEnclosingScope().getFunctionSymbol();
+
+        if (currentFunction.getReturnType().equals(OFPType.VOID)) {
+            if (ctx.expr() != null) {
+                System.err.println("Error: Cannot return a value from a void function.");
+                return OFPType.ERROR;
+            }
+        } else {
+            if (ctx.expr() == null) {
+                System.err.println("Error: Function '" + currentFunction.getName() + "' requires a return value.");
+                return OFPType.ERROR;
+            }
+
+            OFPType returnType = visit(ctx.expr());
+
+            if (!returnType.equals(currentFunction.getReturnType())) {
+                System.err.println("Error: Return type mismatch in function '" + currentFunction.getName()
+                        + "'. Expected '" + currentFunction.getReturnType() + "' but got '" + returnType + "'.");
+                return OFPType.ERROR;
+            }
+        }
+
         return null;
     }
 
