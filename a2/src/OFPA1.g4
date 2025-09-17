@@ -114,7 +114,7 @@ FLOAT
     ;
 
 CHAR
-    : '\'' [a-zA-Z!.?,=:() ] '\'' // TODO: Check if 'epsilon' is allowed epsilon meaning empty
+    : '\'' [a-zA-Z!.?,=:() ] '\'' // TODO: Check if '' is allowed
     ;
 
 STRING
