@@ -172,9 +172,103 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return null; // exprType;
     }
 
+    @Override
+    public OFPType visitPrintStmt(OFPParser.PrintStmtContext ctx) {
+        return null;
+    }
+
     /*
      * More Override functions to add
      */
+
+    @Override
+    public OFPType visitArrayLengthExpr(OFPParser.ArrayLengthExprContext ctx) {
+        OFPType exprType = visit(ctx.expr());
+
+        if (exprType == null) {
+            System.err.println("Error: Invalid expression type in length operation.");
+            return OFPType.ERROR;
+        }
+
+        if (!exprType.equals(OFPType.STRING) && !exprType.equals(OFPType.INT_ARRAY)
+                && !exprType.equals(OFPType.FLOAT_ARRAY) && !exprType.equals(OFPType.CHAR_ARRAY)) {
+            System.err.println("Error: Length can only be applied to strings or arrays.");
+            return OFPType.ERROR;
+        }
+
+        return OFPType.INT;
+    }
+
+    @Override
+    public OFPType visitUnaryExpr(OFPParser.UnaryExprContext ctx) {
+        OFPType exprType = visit(ctx.expr());
+        if (!exprType.equals(OFPType.INT) && !exprType.equals(OFPType.FLOAT)) {
+            System.err.println("Error: Unary minus can only be applied to int or float types.");
+            return OFPType.ERROR;
+        }
+        return exprType;
+    }
+
+    public OFPType visitParenExpr(OFPParser.ParenExprContext ctx) {
+        return visit(ctx.expr());
+    }
+
+    @Override
+    public OFPType visitMultExpr(OFPParser.MultExprContext ctx) {
+        OFPType leftType = visit(ctx.expr(0));
+        OFPType rightType = visit(ctx.expr(1));
+
+        if (leftType.equals(OFPType.ERROR) || rightType.equals(OFPType.ERROR)) {
+            System.err.println("Error: Invalid multiplication/division expression.");
+            return OFPType.ERROR;
+        }
+
+        if (leftType.equals(OFPType.VOID) || rightType.equals(OFPType.VOID)) {
+            System.err.println("Error: Cannot use a void function in a multiplication/division expression.");
+            return OFPType.ERROR;
+        }
+
+        if (!leftType.equals(rightType)) {
+            System.err.println("Error: Type mismatch in expression. Both sides must have the same type.");
+            return OFPType.ERROR;
+        }
+
+        if (!leftType.equals(OFPType.INT) && !leftType.equals(OFPType.FLOAT)
+                || !rightType.equals(OFPType.INT) && !rightType.equals(OFPType.FLOAT)) {
+            System.err.println("Error: Multiplication is only allowed for int or float types.");
+            return OFPType.ERROR;
+        }
+
+        return leftType;
+    }
+
+    @Override
+    public OFPType visitAddiExpr(OFPParser.AddiExprContext ctx) {
+        OFPType leftType = visit(ctx.expr(0));
+        OFPType rightType = visit(ctx.expr(1));
+
+        if (leftType.equals(OFPType.ERROR) || rightType.equals(OFPType.ERROR)) {
+            System.err.println("Error: Invalid arithmetic expression.");
+            return OFPType.ERROR;
+        }
+
+        if (leftType.equals(OFPType.VOID) || rightType.equals(OFPType.VOID)) {
+            System.err.println("Error: Cannot use a void function in an arithmetic expression.");
+            return OFPType.ERROR;
+        }
+
+        if (!leftType.equals(rightType)) {
+            System.err.println("Error: Type mismatch in expression. Both sides must have the same type.");
+            return OFPType.ERROR;
+        }
+
+        if (!leftType.equals(OFPType.INT) && !leftType.equals(OFPType.FLOAT)) {
+            System.err.println("Error: Addition and subtraction are only allowed for int or float types.");
+            return OFPType.ERROR;
+        }
+
+        return leftType;
+    }
 
     @Override
     public OFPType visitRelExpr(OFPParser.RelExprContext ctx) {
