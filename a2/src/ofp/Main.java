@@ -18,7 +18,7 @@ public class Main {
 
         // Select test program
         String testDir = "/home/fred/Documents/4dt902/a2/src/inputs/";
-        String testProgram = testDir + "max.ofp";
+        String testProgram = testDir + "test.ofp";
 
         // Check if input ends with ".ofp"
         if (!testProgram.endsWith(".ofp")) {
@@ -54,18 +54,18 @@ public class Main {
         ParseTreeWalker walker = new ParseTreeWalker();
         SymbolTableListener stListener = new SymbolTableListener();
         walker.walk(stListener, root);
-
         stListener.printSymbolTable();
 
         ParseTreeProperty<Scope> scopes = stListener.getScope();
 
         // Symbol reference checking using a listener ... (This lecture)
+        System.out.println("\n===== Symbol Refrence Checking =====");
         CheckRefListener checkRefListener = new CheckRefListener(scopes, stListener.getGlobalScope());
         walker.walk(checkRefListener, root);
-
         checkRefListener.reportErrors();
 
         // Type checking using a visitor ... (Next lecture)
+        System.out.println("===== Type Checking Errors =====");
         TypeCheckingVisitor tcVisitor = new TypeCheckingVisitor(scopes);
         tcVisitor.visit(root);
     }
