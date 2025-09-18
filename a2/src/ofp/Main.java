@@ -18,7 +18,7 @@ public class Main {
 
         // Select test program
         String testDir = "/home/fred/Documents/4dt902/a2/src/inputs/";
-        String testProgram = testDir + "strings.ofp";
+        String testProgram = testDir + "max.ofp";
 
         // Check if input ends with ".ofp"
         if (!testProgram.endsWith(".ofp")) {
@@ -42,7 +42,7 @@ public class Main {
         System.out.println("\nParsing completed");
 
         // Display tree
-        // Trees.inspect(root, parser); // Uncomment to display tree
+        Trees.inspect(root, parser); // Uncomment to display tree
 
         // Indented tree print using a custom listener
         System.out.println("\n===== Print Listener =====");
