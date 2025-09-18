@@ -154,6 +154,7 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return varType;
     }
 
+    // TODO: fix impl does not work as intended currently
     @Override
     public OFPType visitAssignStmt(OFPParser.AssignStmtContext ctx) {
         OFPType exprType = visit(ctx.expr(1)); // type assigned value
@@ -215,7 +216,6 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
             return null;
         }
-
     }
 
     @Override

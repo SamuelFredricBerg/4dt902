@@ -18,7 +18,7 @@ public class Main {
 
         // Select test program
         String testDir = "/home/fred/Documents/4dt902/a2/src/inputs/";
-        String testProgram = testDir + "test.ofp";
+        String testProgram = testDir + "strings.ofp";
 
         // Check if input ends with ".ofp"
         if (!testProgram.endsWith(".ofp")) {
