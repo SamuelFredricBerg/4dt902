@@ -156,7 +156,66 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
     @Override
     public OFPType visitAssignStmt(OFPParser.AssignStmtContext ctx) {
-        return null; // exprType;
+        OFPType exprType = visit(ctx.expr(1)); // type assigned value
+        String varName = ctx.ID().getText();
+        Symbol varSymbol = currentScope.resolve(varName);
+        if (ctx.expr(0) == null) {
+            // NormalAssign
+            if (exprType != null && exprType.equals(OFPType.VOID)) {
+                System.err.println("Error: Cannot assign the result of a void function.");
+                return OFPType.ERROR;
+            }
+
+            if (varSymbol == null) {
+                System.err.println("Error: Variable '" + varName + "' not declared.");
+                return OFPType.ERROR;
+            }
+
+            OFPType varType = varSymbol.getType();
+
+            if ((varType.equals(OFPType.INT_ARRAY) || varType.equals(OFPType.FLOAT_ARRAY)
+                    || varType.equals(OFPType.CHAR_ARRAY))
+                    && (exprType.equals(OFPType.INT_ARRAY) || exprType.equals(OFPType.FLOAT_ARRAY)
+                            || exprType.equals(OFPType.CHAR_ARRAY))) {
+
+                // Check if array types match
+                if (!varType.equals(exprType)) {
+                    System.err.println("Error: Type mismatch in array assignment. Expected '" + varType + "' but got '"
+                            + exprType + "'.");
+                    return OFPType.ERROR;
+                }
+            } else if (!varType.equals(exprType)) {
+                System.err.println(
+                        "Error: Type mismatch in assignment. Expected '" + varType + "' but got '" + exprType + "'.");
+                return OFPType.ERROR;
+            }
+
+            return exprType;
+        } else {
+            // ArrayAssign
+            OFPType indexType = visit(ctx.expr(0)); // Check the array index
+            if (!indexType.equals(OFPType.INT)) {
+                System.err.println("Error: Array index must be of type int.");
+            }
+
+            if (varSymbol == null) {
+                System.err.println("Error: Array '" + varName + "' not declared.");
+                return OFPType.ERROR;
+            }
+
+            OFPType arrayType = varSymbol.getType();
+
+            if (arrayType.equals(OFPType.INT_ARRAY) && !exprType.equals(OFPType.INT)) {
+                System.err.println("Error: Cannot assign non-int to int array.");
+            } else if (arrayType.equals(OFPType.FLOAT_ARRAY) && !exprType.equals(OFPType.FLOAT)) {
+                System.err.println("Error: Cannot assign non-float to float array.");
+            } else if (arrayType.equals(OFPType.CHAR_ARRAY) && !exprType.equals(OFPType.CHAR)) {
+                System.err.println("Error: Cannot assign non-char to char array.");
+            }
+
+            return null;
+        }
+
     }
 
     @Override
