@@ -117,19 +117,6 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     }
 
     @Override
-    public OFPType visitIDExpr(OFPParser.IDExprContext ctx) {
-        String varName = ctx.ID().getText();
-        Symbol varSymbol = currentScope.resolve(varName);
-
-        if (varSymbol == null) {
-            System.err.println("Error: Variable '" + varName + "' not declared.");
-            return OFPType.ERROR;
-        }
-
-        return varSymbol.getType();
-    }
-
-    @Override
     public OFPType visitVarDeclStmt(OFPParser.VarDeclStmtContext ctx) {
         String varName = ctx.ID().getText();
         OFPType exprType;
@@ -174,7 +161,34 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
     @Override
     public OFPType visitPrintStmt(OFPParser.PrintStmtContext ctx) {
+        if (ctx.expr() != null) {
+            OFPType exprType = visit(ctx.expr());
+            if (exprType == null) {
+                System.err.println("Error: Invalid type in print statement.");
+                return OFPType.ERROR;
+            }
+        }
         return null;
+    }
+
+    @Override
+    public OFPType visitIfStmt(OFPParser.IfStmtContext ctx) {
+        OFPType conditionType = visit(ctx.expr());
+        if (!conditionType.equals(OFPType.BOOLEAN)) {
+            System.err.println("Error: Condition in if-statement must be of type bool.");
+            return OFPType.ERROR;
+        }
+        return super.visitIfStmt(ctx);
+    }
+
+    @Override
+    public OFPType visitWhileStmt(OFPParser.WhileStmtContext ctx) {
+        OFPType conditionType = visit(ctx.expr());
+        if (!conditionType.equals(OFPType.BOOLEAN)) {
+            System.err.println("Error: Condition in while-statement must be of type bool.");
+            return OFPType.ERROR;
+        }
+        return super.visitWhileStmt(ctx);
     }
 
     @Override
@@ -358,22 +372,15 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     }
 
     @Override
-    public OFPType visitIfStmt(OFPParser.IfStmtContext ctx) {
-        OFPType conditionType = visit(ctx.expr());
-        if (!conditionType.equals(OFPType.BOOLEAN)) {
-            System.err.println("Error: Condition in if-statement must be of type bool.");
-            return OFPType.ERROR;
-        }
-        return super.visitIfStmt(ctx);
-    }
+    public OFPType visitIDExpr(OFPParser.IDExprContext ctx) {
+        String varName = ctx.ID().getText();
+        Symbol varSymbol = currentScope.resolve(varName);
 
-    @Override
-    public OFPType visitWhileStmt(OFPParser.WhileStmtContext ctx) {
-        OFPType conditionType = visit(ctx.expr());
-        if (!conditionType.equals(OFPType.BOOLEAN)) {
-            System.err.println("Error: Condition in while-statement must be of type bool.");
+        if (varSymbol == null) {
+            System.err.println("Error: Variable '" + varName + "' not declared.");
             return OFPType.ERROR;
         }
-        return super.visitWhileStmt(ctx);
+
+        return varSymbol.getType();
     }
 }

@@ -82,6 +82,6 @@ public class CheckRefListener extends OFPBaseListener {
     }
 
     public void reportErrors() {
-        System.out.println("Semantic analysis completed with " + checkRefErrorCount + " errors.\n");
+        System.out.println("\nSemantic analysis completed with " + checkRefErrorCount + " errors.\n");
     }
 }
