@@ -198,7 +198,40 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
     @Override
     public OFPType visitArrayAccessExpr(OFPParser.ArrayAccessExprContext ctx) {
-        return null;
+        String varName = ctx.ID().getText();
+        Symbol varSymbol = currentScope.resolve(varName);
+
+        if (varSymbol == null) {
+            System.err.println("Error: Array '" + varName + "' not declared.");
+            return OFPType.ERROR;
+        }
+
+        OFPType varType = varSymbol.getType();
+        if (!varType.equals(OFPType.INT_ARRAY) && !varType.equals(OFPType.FLOAT_ARRAY)
+                && !varType.equals(OFPType.CHAR_ARRAY) && !varType.equals(OFPType.STRING)) {
+            System.err.println("Error: '" + varName + "' is not an array.");
+            return OFPType.ERROR;
+        }
+
+        OFPType indexType = visit(ctx.expr());
+        if (!indexType.equals(OFPType.INT)) {
+            System.err.println("Error: Array index must be of type int.");
+            return OFPType.ERROR;
+        }
+
+        if (varType.equals(OFPType.INT_ARRAY)) {
+            return OFPType.INT;
+        }
+
+        if (varType.equals(OFPType.FLOAT_ARRAY)) {
+            return OFPType.FLOAT;
+        }
+
+        if (varType.equals(OFPType.CHAR_ARRAY) || varType.equals(OFPType.STRING)) {
+            return OFPType.CHAR;
+        }
+
+        return null; // should not be reached
     }
 
     @Override
