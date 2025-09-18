@@ -157,10 +157,11 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     // TODO: fix impl does not work as intended currently
     @Override
     public OFPType visitAssignStmt(OFPParser.AssignStmtContext ctx) {
-        OFPType exprType = visit(ctx.expr(1)); // type assigned value
         String varName = ctx.ID().getText();
         Symbol varSymbol = currentScope.resolve(varName);
-        if (ctx.expr(0) == null) {
+        if (ctx.expr(1) == null) {
+            OFPType exprType = visit(ctx.expr(0)); // type assigned value
+
             // NormalAssign
             if (exprType != null && exprType.equals(OFPType.VOID)) {
                 System.err.println("Error: Cannot assign the result of a void function.");
@@ -195,6 +196,8 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         } else {
             // ArrayAssign
             OFPType indexType = visit(ctx.expr(0)); // Check the array index
+            OFPType exprType = visit(ctx.expr(1)); // type assigned value
+
             if (!indexType.equals(OFPType.INT)) {
                 System.err.println("Error: Array index must be of type int.");
             }
