@@ -62,6 +62,7 @@ public class SymbolTableListener extends OFPBaseListener {
         currentScope.define(currentFunctionSymbol);
 
         Scope functionScope = new Scope(currentScope);
+        functionScope.setFunctionSymbol(currentFunctionSymbol);
         currentScope.addChildScope(functionScope);
         currentScope = functionScope;
 
