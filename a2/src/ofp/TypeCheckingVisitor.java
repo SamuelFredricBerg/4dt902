@@ -193,7 +193,51 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
     @Override
     public OFPType visitArrayInitExpr(OFPParser.ArrayInitExprContext ctx) {
-        return null;
+        if (ctx.getChild(0).getText().equals("new")) {
+            // Handle new TYPE[expr]
+            OFPType arrayType = OFPType.getTypeFor(ctx.TYPE().getText());
+            OFPType sizeType = visit(ctx.expr(0));
+
+            if (!sizeType.equals(OFPType.INT)) {
+                System.err.println("Error: Array size must be of type int.");
+                return OFPType.ERROR;
+            }
+
+            if (!arrayType.equals(OFPType.INT) && !arrayType.equals(OFPType.FLOAT)
+                    && !arrayType.equals(OFPType.CHAR)) {
+                System.err.println("Error: Invalid array type at line " + ctx.getStart().getLine() + ", column "
+                        + ctx.getStart().getCharPositionInLine() + ".");
+                return OFPType.ERROR;
+            }
+
+            return arrayType;
+        } else {
+            // Handle { expr, ... }
+            OFPType firstExprType = visit(ctx.expr(0));
+
+            for (int i = 1; i < ctx.expr().size(); i++) {
+                OFPType elementType = visit(ctx.expr(i));
+                if (!elementType.equals(firstExprType)) {
+                    System.err.println("Error: All elements in the array must have the same type.");
+                    return OFPType.ERROR;
+                }
+            }
+
+            if (firstExprType.equals(OFPType.INT)) {
+                return OFPType.INT_ARRAY;
+            } else if (firstExprType.equals(OFPType.FLOAT)) {
+                return OFPType.FLOAT_ARRAY;
+            } else if (firstExprType.equals(OFPType.CHAR)) {
+                return OFPType.CHAR_ARRAY;
+            } else {
+                System.err.println("Error: Invalid element type in array initialization.");
+                return OFPType.ERROR;
+            }
+
+            // Need to check if case is handled:
+            // int[] a;
+            // a = {1.1, 2.2, 3.3}
+        }
     }
 
     @Override
