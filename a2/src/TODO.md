@@ -5,8 +5,6 @@ Kemal:
 ```ANTLR
 arrayInit : 'new' TYPE '[' expr ']' | '{' ( expr ( ',' expr )* )? '}' ;
 
-arrayVar : ID '[' expr ']' ;
-
 assign : ID '=' expr ';' ;
 
 arrayAssign : arrayVar '=' expr ';' ;
@@ -21,6 +19,5 @@ stmt
 expr
     : 'new' TYPE '[' expr ']'       # ArrayCreationExpr
     | '{' (expr (',' expr)*)? '}'   # ArrayInitExpr
-    | ID '[' expr ']'               # ArrayAccessExpr
     ;
 ```

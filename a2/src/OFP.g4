@@ -40,7 +40,8 @@ stmt
     ;
 
 expr
-    : '{' (expr (',' expr)*)? '}'   # ArrayInitExpr
+    : ('{' (expr (',' expr)*)? '}'
+    | 'new' TYPE '[' expr ']')      # ArrayInitExpr
     | ID '[' expr ']'               # ArrayAccessExpr
     | expr '.length'                # ArrayLengthExpr
     | funcCall                      # FuncCallExpr
@@ -50,7 +51,6 @@ expr
     | expr ('+' | '-') expr         # AddiExpr
     | expr ('<' | '>') expr         # RelExpr
     | expr '==' expr                # EqExpr
-    | 'new' TYPE '[' expr ']'       # ArrayCreationExpr
     | INT                           # IntExpr
     | FLOAT                         # FloatExpr
     | BOOLEAN                       # BoolExpr

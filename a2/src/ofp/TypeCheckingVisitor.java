@@ -235,11 +235,6 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     }
 
     @Override
-    public OFPType visitArrayCreationExpr(OFPParser.ArrayCreationExprContext ctx) {
-        return null;
-    }
-
-    @Override
     public OFPType visitArrayLengthExpr(OFPParser.ArrayLengthExprContext ctx) {
         OFPType exprType = visit(ctx.expr());
 
