@@ -21,6 +21,6 @@ stmt
 expr
     : 'new' TYPE '[' expr ']'       # ArrayCreationExpr
     | '{' (expr (',' expr)*)? '}'   # ArrayInitExpr
-    | expr '[' expr ']'             # ArrayAccessExpr
+    | ID '[' expr ']'               # ArrayAccessExpr
     ;
 ```

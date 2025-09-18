@@ -41,7 +41,7 @@ stmt
 
 expr
     : '{' (expr (',' expr)*)? '}'   # ArrayInitExpr
-    | expr '[' expr ']'             # ArrayAccessExpr
+    | ID '[' expr ']'               # ArrayAccessExpr
     | expr '.length'                # ArrayLengthExpr
     | funcCall                      # FuncCallExpr
     | '(' expr ')'                  # ParenExpr
