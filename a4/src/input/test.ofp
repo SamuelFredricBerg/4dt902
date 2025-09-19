@@ -1,4 +1,9 @@
 void main() {
-    int[] a;
-    a = {1,2,3,4,5,6,7};
+    int n = 14.17; # assign float to an int
+    float pi = 314; # assign int to a float
+    float x = 1.22 + 7; # float + int
+    int[] iArr = {1,2,3,4,5,6,7.5}; # Final value float
+    float[] fArr = {1.2,2.4,3.6,4.8,6}; # Final value int
+
+    a = 10;
 }

@@ -22,8 +22,6 @@ public class OFPType {
     public static final OFPType ERROR = new OFPType("error");
 
     public static OFPType getTypeFor(String typeName) {
-        // typeName = typeName.strip();
-
         switch (typeName) {
             case "int":
                 return INT;
