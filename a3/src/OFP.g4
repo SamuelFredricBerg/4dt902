@@ -25,7 +25,7 @@ funcCall
 
 
 block
-    : '{' stmt* '}'
+    : '{' stmt* '}' | stmt
     ;
 
 stmt
@@ -33,9 +33,9 @@ stmt
     | funcCall ';'                              # FuncCallStmt
     | ID ('[' expr ']')? '=' expr ';'           # AssignStmt
     | TYPE ID ('=' expr)? ';'                   # VarDeclStmt
-    | 'if' '(' expr ')' (block | stmt)
-    ('else' (block | stmt))?                    # IfStmt
-    | 'while' '(' expr ')' (block | stmt)       # WhileStmt
+    | 'if' '(' expr ')' block
+    ('else' block)?                    # IfStmt
+    | 'while' '(' expr ')' block       # WhileStmt
     | 'return' expr? ';'                        # ReturnStmt
     ;
 

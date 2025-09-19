@@ -40,7 +40,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
             "vars", "zip"));
 
     private String indent() {
-        return " ".repeat(depth * 4);
+        return " ".repeat(depth * 2);
     }
 
     private static String getSafeId(String id) {
@@ -105,18 +105,13 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     @Override
     public String visitMain(OFPParser.MainContext ctx) {
-        StringBuilder mainStmt = new StringBuilder();
-
-        mainStmt.append("#\n# Program entry point - main\n#\n");
-
         int previousDepth = depth;
         depth = -1;
 
-        mainStmt.append(visit(ctx.block()));
-
+        String mainStmt = visit(ctx.block());
         depth = previousDepth;
 
-        return mainStmt.toString();
+        return mainStmt;
     }
 
     @Override
@@ -128,10 +123,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
         currentScope = scopes.get(ctx);
         FunctionSymbol functionSymbol = (FunctionSymbol) currentScope.resolve(ctx.ID(0).getText());
 
-        functionDeclStmt.append(indent())
-                .append("def ")
-                .append(functionName)
-                .append("(");
+        functionDeclStmt.append(indent() + "def " + functionName + "(");
 
         List<Symbol> params = functionSymbol.getParameters();
         for (int i = 0; i < params.size(); i++) {
@@ -142,11 +134,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
             }
         }
 
-        functionDeclStmt.append("):\n");
-
-        functionDeclStmt.append(visit(ctx.block()));
-
-        functionDeclStmt.append("\n");
+        functionDeclStmt.append("):\n" + visit(ctx.block()) + "\n");
 
         return functionDeclStmt.toString();
     }
@@ -213,56 +201,25 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     @Override
     public String visitAssignStmt(OFPParser.AssignStmtContext ctx) {
-        // Handle array assignments, look at TypeCheckingVisitor.
-
         String varName = getSafeId(ctx.ID().getText());
-        String expr = visit(ctx.expr(1));
 
-        return indent() + varName + " = " + expr + "\n";
+        if (ctx.expr(1) == null) {
+            String assignExpr = visit(ctx.expr(0));
+            return indent() + varName + " = " + assignExpr + "\n";
+        } else {
+            String assignIndex = ctx.expr(0).getText();
+            String assignExpr = visit(ctx.expr(1));
+            return indent() + varName + "[" + assignIndex + "]" + " = " + assignExpr + "\n";
+        }
+
     }
-
-    // // Visit array access, for example a[0] = 5;
-    // // line 33 in parser.g4
-    // TODO: @Override
-    // public String visitArrayAssign(OFPParser.ArrayAssignContext ctx) {
-    // StringBuilder arrayAssignStmt = new StringBuilder();
-
-    // String arrayVarStmt = visit(ctx.arrayVar());
-
-    // String valueExpr = visit(ctx.expr());
-
-    // arrayAssignStmt.append(indent())
-    // .append(arrayVarStmt)
-    // .append(" = ")
-    // .append(valueExpr)
-    // .append("\n");
-
-    // return arrayAssignStmt.toString();
-    // }
 
     @Override
     public String visitArrayAccessExpr(OFPParser.ArrayAccessExprContext ctx) {
-        // look at TypeCheckingVisitor.
+        String varName = getSafeId(ctx.ID().getText());
 
-        return null;
+        return varName + "[" + visit(ctx.expr()) + "]";
     }
-
-    // // Visit array declaration, for example int[] a;
-    // TODO: @Override
-    // public String visitArrayVar(OFPParser.ArrayVarContext ctx) {
-    // StringBuilder arrayAccessStmt = new StringBuilder();
-
-    // String arrayName = getSafeId(ctx.ID().getText());
-
-    // arrayAccessStmt.append(arrayName)
-    // .append("[")
-    // .append(visit(ctx.expr()))
-    // .append("]");
-
-    // // f[expr?]
-
-    // return arrayAccessStmt.toString();
-    // }
 
     @Override
     public String visitArrayInitExpr(OFPParser.ArrayInitExprContext ctx) {

@@ -20,8 +20,9 @@ public class Main {
     public static void main(String[] args) {
 
         // Select test program
-        String testDir = "/home/fred/Documents/4dt902/a2/src/inputs/";
-        String testProgram = testDir + "test.ofp";
+        String inputDir = "/home/fred/Documents/4dt902/a3/src/input/";
+        String testProgram = inputDir + "max.ofp";
+        String outputDir = "/home/fred/Documents/4dt902/a3/src/output/";
 
         // Check if input ends with ".ofp"
         if (!testProgram.endsWith(".ofp")) {
@@ -45,7 +46,7 @@ public class Main {
         System.out.println("\nParsing completed");
 
         // Display tree
-        Trees.inspect(root, parser); // Uncomment to display tree
+        // Trees.inspect(root, parser); // Uncomment to display tree
 
         // Indented tree print using a custom listener
         System.out.println("\n===== Print Listener =====");
@@ -72,19 +73,22 @@ public class Main {
         TypeCheckingVisitor tcVisitor = new TypeCheckingVisitor(scopes);
         tcVisitor.visit(root);
 
-        // Python
+        // Python Genertion
         System.out.println("\nGenerating Python code...");
 
-        String baseFileName = testProgram.substring(testProgram.lastIndexOf('/') + 1, testProgram.lastIndexOf('.'));
-        String outputPythonFile = testDir + baseFileName + ".py";
+        String baseFileName = testProgram.substring(testProgram.lastIndexOf('/') + 1,
+                testProgram.lastIndexOf('.'));
+        String outputPythonFile = outputDir + baseFileName + ".py";
 
         PythonGenerator pythonCodeGenerator = new PythonGenerator(scopes);
         String generatedPythonCode = pythonCodeGenerator.visit(root);
 
         try {
-            Files.write(Paths.get(outputPythonFile), generatedPythonCode.getBytes(), StandardOpenOption.CREATE,
+            Files.write(Paths.get(outputPythonFile), generatedPythonCode.getBytes(),
+                    StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);
-            System.out.println("Python code generated and written to: " + outputPythonFile);
+            System.out.println("Python code generated and written to: " +
+                    outputPythonFile);
         } catch (IOException e) {
             System.err.println("Error writing Python code to file: " + e.getMessage());
         }
