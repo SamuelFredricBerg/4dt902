@@ -31,7 +31,8 @@
         "java.project.referencedLibraries": [
             "/home/fred/Documents/jars/antlr4-4.13.1.jar",
             "/home/fred/Documents/jars/antlr4-runtime-4.13.1.jar",
-            "/home/fred/Documents/jars/org.abego.treelayout.core-1.0.3.jar"
+            "/home/fred/Documents/jars/org.abego.treelayout.core-1.0.3.jar",
+            "/home/fred/Documents/jars/asm-all-5.0.1.jar"
         ]
     }
 }
