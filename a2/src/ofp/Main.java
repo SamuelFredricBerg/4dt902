@@ -50,7 +50,7 @@ public class Main {
         PrintListener printListener = new PrintListener();
         walkerTest.walk(printListener, root);
 
-        // Symbol table construction using a listener ... (This lecture)
+        // Symbol table construction
         ParseTreeWalker walker = new ParseTreeWalker();
         SymbolTableListener stListener = new SymbolTableListener();
         walker.walk(stListener, root);
@@ -58,13 +58,13 @@ public class Main {
 
         ParseTreeProperty<Scope> scopes = stListener.getScope();
 
-        // Symbol reference checking using a listener ... (This lecture)
+        // Symbol reference checking
         System.out.println("\n===== Symbol Refrence Checking =====");
         CheckRefListener checkRefListener = new CheckRefListener(scopes, stListener.getGlobalScope());
         walker.walk(checkRefListener, root);
         checkRefListener.reportErrors();
 
-        // Type checking using a visitor ... (Next lecture)
+        // Type checking
         System.out.println("===== Type Checking Errors =====");
         TypeCheckingVisitor tcVisitor = new TypeCheckingVisitor(scopes);
         tcVisitor.visit(root);
