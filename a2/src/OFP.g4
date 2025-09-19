@@ -34,9 +34,9 @@ stmt
     | ID ('[' expr ']')? '=' expr ';'           # AssignStmt
     | TYPE ID ('=' expr)? ';'                   # VarDeclStmt
     | 'if' '(' expr ')' block
-    ('else' block)?                    # IfStmt
-    | 'while' '(' expr ')' block       # WhileStmt
-    | 'return' expr ';'                        # ReturnStmt
+    ('else' block)?                             # IfStmt
+    | 'while' '(' expr ')' block                # WhileStmt
+    | 'return' expr ';'                         # ReturnStmt
     ;
 
 expr
