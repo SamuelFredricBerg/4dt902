@@ -43,9 +43,6 @@ def selectionSort(arr):
         arr[i] = smallestNumber
         i = i + 1
 
-#
-# Program entry point - main
-#
 a = [0]*10
 i = 0
 n = 2

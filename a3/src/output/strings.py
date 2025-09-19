@@ -42,9 +42,6 @@ def contains(ofp_str, ch):
         i = i + 1
     return False
 
-#
-# Program entry point - main
-#
 s = "All students got the highest grade A!"
 res = countA(s)
 print(res)
