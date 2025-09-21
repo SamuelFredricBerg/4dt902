@@ -92,5 +92,25 @@ public class Main {
         } catch (IOException e) {
             System.err.println("Error writing Python code to file: " + e.getMessage());
         }
+
+        // Bytecode generation
+        // System.out.println("\nBytecode generation started\n");
+        // BytecodeGenerator bcGen = new BytecodeGenerator(table, progName);
+        // bcGen.visit(root);
+        // System.out.println("\nVerify and Print bytecode\n");
+        // byte[] code = bcGen.getByteArray();
+        // ClassReader cr = new ClassReader(code);
+        // ClassVisitor tracer = new TraceClassVisitor(new PrintWriter(System.out));
+        // ClassVisitor checker = new CheckClassAdapter(tracer, true);
+        // cr.accept(checker, 0);
+        // File javaOutFile = new File("test_class_files/" + progName + ".class");
+        // FileOutputStream fos = new FileOutputStream(javaOutFile);
+        // fos.write(code);
+        // fos.close();
+        // System.out.println("Bytecode saved in " + javaOutFile.getAbsolutePath());
+        // System.out.println("\nExecuting bytecode");
+        // Main loader = new Main();
+        // Class<?> exampleClass = loader.defineClass(progName, code, 0, code.length);
+        // exampleClass.getMethods()[0].invoke(null, new Object[] { null });
     }
 }
