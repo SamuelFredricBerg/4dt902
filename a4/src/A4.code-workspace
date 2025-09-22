@@ -23,7 +23,7 @@
                     "request": "launch",
                     "name": "Debug A4",
                     "grammar": "/home/fred/Documents/4dt902/a4/src/OFP.g4",
-                    "input": "/home/fred/Documents/4dt902/a4/src/test/hellProgram.ofp",
+                    "input": "/home/fred/Documents/4dt902/a4/src/input/max.ofp",
                     "visualParseTree": true
                 }
             ]
