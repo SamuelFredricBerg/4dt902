@@ -70,6 +70,6 @@ public class OFPType {
 
     @Override
     public String toString() {
-        return "OFPType: " + name;
+        return name;
     }
 }
