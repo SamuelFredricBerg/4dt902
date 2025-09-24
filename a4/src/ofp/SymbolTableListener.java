@@ -13,7 +13,6 @@ public class SymbolTableListener extends OFPBaseListener {
 
     @Override
     public void enterProgram(OFPParser.ProgramContext ctx) {
-        // Initialize global scope
         globalScope = new Scope(null);
         currentScope = globalScope;
         scopes.put(ctx, globalScope);
