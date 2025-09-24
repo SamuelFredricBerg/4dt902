@@ -119,10 +119,14 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
         StringBuilder blockStmt = new StringBuilder();
 
         depth++;
-        for (int i = 0; i < ctx.getChildCount(); i++) {
-            String stmt = visit(ctx.getChild(i));
-            if (stmt != null && !stmt.isEmpty()) {
-                blockStmt.append(indent()).append(stmt);
+        if (ctx.stmt().isEmpty())
+            blockStmt.append(indent()).append("\tpass\n");
+        else {
+            for (int i = 0; i < ctx.getChildCount(); i++) {
+                String stmt = visit(ctx.getChild(i));
+                if (stmt != null && !stmt.isEmpty()) {
+                    blockStmt.append(indent()).append(stmt);
+                }
             }
         }
         depth--;
