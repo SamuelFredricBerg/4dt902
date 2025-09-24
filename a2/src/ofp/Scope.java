@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Scope {
-    private Scope enclosingScope; // null if global scope
+    private Scope enclosingScope;
     private Map<String, Symbol> symbols = new LinkedHashMap<String, Symbol>();
     private List<Scope> childScopes = new ArrayList<>();
-    private FunctionSymbol functionSymbol; // if scope is a function scope
+    private FunctionSymbol functionSymbol;
 
     public Scope(Scope enclosingScope) {
         this.enclosingScope = enclosingScope;
@@ -52,7 +52,7 @@ public class Scope {
         } else if (enclosingScope != null) {
             return enclosingScope.resolve(name);
         } else
-            return null; // not found
+            return null;
     }
 
     public Symbol localResolve(String name) {
@@ -60,7 +60,7 @@ public class Scope {
         if (sym != null)
             return sym;
         else
-            return null; // not found
+            return null;
     }
 
     @Override
