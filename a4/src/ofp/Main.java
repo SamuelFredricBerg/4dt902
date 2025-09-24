@@ -55,7 +55,7 @@ public class Main extends ClassLoader implements Opcodes {
         System.out.println("\nParsing completed");
 
         // Display tree
-        Trees.inspect(root, parser); // Uncomment to display tree
+        // Trees.inspect(root, parser); // Uncomment to display tree
 
         // Indented tree print
         System.out.println("\n===== Print Listener =====");

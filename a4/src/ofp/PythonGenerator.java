@@ -39,53 +39,8 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
             "round", "set", "setattr", "slice", "sorted", "staticmethod", "str", "sum", "super", "tuple", "type",
             "vars", "zip"));
 
-    private String indent() {
-        return " ".repeat(depth * 2);
-    }
-
-    private static String getSafeId(String id) {
-        if (reservedIds.contains(id)) {
-            return "ofp_" + id; // Prefix with ofp_
-        }
-        return id;
-    }
-
     public PythonGenerator(ParseTreeProperty<Scope> scopes) {
         this.scopes = scopes;
-    }
-
-    @Override
-    public String visitIDExpr(OFPParser.IDExprContext ctx) {
-        return getSafeId(ctx.ID().getText());
-    }
-
-    @Override
-    public String visitIntExpr(OFPParser.IntExprContext ctx) {
-        return ctx.INT().getText();
-    }
-
-    @Override
-    public String visitFloatExpr(OFPParser.FloatExprContext ctx) {
-        return ctx.FLOAT().getText();
-    }
-
-    @Override
-    public String visitBoolExpr(OFPParser.BoolExprContext ctx) {
-        if ("true".equals(ctx.BOOLEAN().getText())) {
-            return "True";
-        } else {
-            return "False";
-        }
-    }
-
-    @Override
-    public String visitCharExpr(OFPParser.CharExprContext ctx) {
-        return ctx.CHAR().getText();
-    }
-
-    @Override
-    public String visitStringExpr(OFPParser.StringExprContext ctx) {
-        return ctx.STRING().getText();
     }
 
     @Override
@@ -160,22 +115,6 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
     }
 
     @Override
-    public String visitFuncCallStmt(OFPParser.FuncCallStmtContext ctx) {
-        return indent() + visit(ctx.funcCall()) + "\n";
-    }
-
-    @Override
-    public String visitReturnStmt(OFPParser.ReturnStmtContext ctx) {
-        StringBuilder returnStmt = new StringBuilder();
-
-        returnStmt.append(indent()).append("return ");
-        returnStmt.append(visit(ctx.expr()));
-        returnStmt.append("\n");
-
-        return returnStmt.toString();
-    }
-
-    @Override
     public String visitBlock(OFPParser.BlockContext ctx) {
         StringBuilder blockStmt = new StringBuilder();
 
@@ -189,81 +128,6 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
         depth--;
 
         return blockStmt.toString();
-    }
-
-    @Override
-    public String visitVarDeclStmt(OFPParser.VarDeclStmtContext ctx) {
-        String varName = getSafeId(ctx.ID().getText()); // vänsterled
-        String expr = ctx.expr() != null ? visit(ctx.expr()) : "None"; // högerled
-
-        return indent() + varName + " = " + expr + "\n";
-    }
-
-    @Override
-    public String visitAssignStmt(OFPParser.AssignStmtContext ctx) {
-        String varName = getSafeId(ctx.ID().getText());
-
-        if (ctx.expr(1) == null) {
-            String assignExpr = visit(ctx.expr(0));
-            return indent() + varName + " = " + assignExpr + "\n";
-        } else {
-            String assignIndex = ctx.expr(0).getText();
-            String assignExpr = visit(ctx.expr(1));
-            return indent() + varName + "[" + assignIndex + "]" + " = " + assignExpr + "\n";
-        }
-
-    }
-
-    @Override
-    public String visitArrayAccessExpr(OFPParser.ArrayAccessExprContext ctx) {
-        String varName = getSafeId(ctx.ID().getText());
-
-        return varName + "[" + visit(ctx.expr()) + "]";
-    }
-
-    @Override
-    public String visitArrayInitExpr(OFPParser.ArrayInitExprContext ctx) {
-        StringBuilder arrayInit = new StringBuilder();
-
-        if ("new".equals(ctx.getChild(0).getText())) {
-            String size = visit(ctx.expr(0));
-            arrayInit.append("[0]*").append(size);
-        } else {
-            arrayInit.append("[");
-            for (int i = 0; i < ctx.expr().size(); i++) {
-                if (i > 0) {
-                    arrayInit.append(", ");
-                }
-                arrayInit.append(visit(ctx.expr(i)));
-            }
-            arrayInit.append("]");
-        }
-
-        return arrayInit.toString();
-    }
-
-    @Override
-    public String visitArrayLengthExpr(OFPParser.ArrayLengthExprContext ctx) {
-        StringBuilder lengthExpr = new StringBuilder();
-
-        String expr = visit(ctx.expr());
-
-        lengthExpr.append("len(")
-                .append(expr)
-                .append(")");
-
-        return lengthExpr.toString();
-    }
-
-    @Override
-    public String visitUnaryExpr(OFPParser.UnaryExprContext ctx) {
-        StringBuilder unaryExpr = new StringBuilder();
-
-        unaryExpr.append("-");
-
-        unaryExpr.append(visit(ctx.expr()));
-
-        return unaryExpr.toString();
     }
 
     @Override
@@ -293,64 +157,31 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
         return printStmt.toString();
     }
 
-    public String visitParenExpr(OFPParser.ParenExprContext ctx) {
-        StringBuilder parenthesesExpr = new StringBuilder();
-
-        parenthesesExpr.append("(")
-                .append(visit(ctx.expr()))
-                .append(")");
-
-        return parenthesesExpr.toString();
+    @Override
+    public String visitFuncCallStmt(OFPParser.FuncCallStmtContext ctx) {
+        return indent() + visit(ctx.funcCall()) + "\n";
     }
 
     @Override
-    public String visitAddiExpr(OFPParser.AddiExprContext ctx) {
-        StringBuilder addiExpr = new StringBuilder();
+    public String visitAssignStmt(OFPParser.AssignStmtContext ctx) {
+        String varName = getSafeId(ctx.ID().getText());
 
-        addiExpr.append(visit(ctx.expr(0)))
-                .append(" ")
-                .append(ctx.getChild(1).getText())
-                .append(" ")
-                .append(visit(ctx.expr(1)));
-
-        return addiExpr.toString();
+        if (ctx.expr(1) == null) {
+            String assignExpr = visit(ctx.expr(0));
+            return indent() + varName + " = " + assignExpr + "\n";
+        } else {
+            String assignIndex = ctx.expr(0).getText();
+            String assignExpr = visit(ctx.expr(1));
+            return indent() + varName + "[" + assignIndex + "]" + " = " + assignExpr + "\n";
+        }
     }
 
     @Override
-    public String visitMultExpr(OFPParser.MultExprContext ctx) {
-        StringBuilder multExpr = new StringBuilder();
+    public String visitVarDeclStmt(OFPParser.VarDeclStmtContext ctx) {
+        String varName = getSafeId(ctx.ID().getText());
+        String expr = ctx.expr() != null ? visit(ctx.expr()) : "None";
 
-        multExpr.append(visit(ctx.expr(0)))
-                .append(ctx.getChild(1).getText())
-                .append(visit(ctx.expr(1)));
-
-        return multExpr.toString();
-    }
-
-    @Override
-    public String visitRelExpr(OFPParser.RelExprContext ctx) {
-        StringBuilder relationalExpr = new StringBuilder();
-
-        relationalExpr.append(visit(ctx.expr(0)))
-                .append(" ")
-                .append(ctx.getChild(1).getText())
-                .append(" ")
-                .append(visit(ctx.expr(1)));
-
-        return relationalExpr.toString();
-    }
-
-    @Override
-    public String visitEqExpr(OFPParser.EqExprContext ctx) {
-        StringBuilder equalityExpr = new StringBuilder();
-
-        equalityExpr.append(visit(ctx.expr(0)))
-                .append(" ")
-                .append(ctx.getChild(1).getText())
-                .append(" ")
-                .append(visit(ctx.expr(1)));
-
-        return equalityExpr.toString();
+        return indent() + varName + " = " + expr + "\n";
     }
 
     @Override
@@ -407,5 +238,174 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
         whileStmt.append(visit(ctx.block()));
 
         return whileStmt.toString();
+    }
+
+    @Override
+    public String visitReturnStmt(OFPParser.ReturnStmtContext ctx) {
+        StringBuilder returnStmt = new StringBuilder();
+
+        returnStmt.append(indent()).append("return ");
+        returnStmt.append(visit(ctx.expr()));
+        returnStmt.append("\n");
+
+        return returnStmt.toString();
+    }
+
+    @Override
+    public String visitArrayInitExpr(OFPParser.ArrayInitExprContext ctx) {
+        StringBuilder arrayInit = new StringBuilder();
+
+        if ("new".equals(ctx.getChild(0).getText())) {
+            String size = visit(ctx.expr(0));
+            arrayInit.append("[0]*").append(size);
+        } else {
+            arrayInit.append("[");
+            for (int i = 0; i < ctx.expr().size(); i++) {
+                if (i > 0) {
+                    arrayInit.append(", ");
+                }
+                arrayInit.append(visit(ctx.expr(i)));
+            }
+            arrayInit.append("]");
+        }
+
+        return arrayInit.toString();
+    }
+
+    @Override
+    public String visitArrayAccessExpr(OFPParser.ArrayAccessExprContext ctx) {
+        String varName = getSafeId(ctx.ID().getText());
+
+        return varName + "[" + visit(ctx.expr()) + "]";
+    }
+
+    @Override
+    public String visitArrayLengthExpr(OFPParser.ArrayLengthExprContext ctx) {
+        StringBuilder lengthExpr = new StringBuilder();
+
+        String expr = visit(ctx.expr());
+
+        lengthExpr.append("len(")
+                .append(expr)
+                .append(")");
+
+        return lengthExpr.toString();
+    }
+
+    @Override
+    public String visitParenExpr(OFPParser.ParenExprContext ctx) {
+        StringBuilder parenthesesExpr = new StringBuilder();
+
+        parenthesesExpr.append("(")
+                .append(visit(ctx.expr()))
+                .append(")");
+
+        return parenthesesExpr.toString();
+    }
+
+    @Override
+    public String visitUnaryExpr(OFPParser.UnaryExprContext ctx) {
+        StringBuilder unaryExpr = new StringBuilder();
+
+        unaryExpr.append("-");
+
+        unaryExpr.append(visit(ctx.expr()));
+
+        return unaryExpr.toString();
+    }
+
+    @Override
+    public String visitMultExpr(OFPParser.MultExprContext ctx) {
+        StringBuilder multExpr = new StringBuilder();
+
+        multExpr.append(visit(ctx.expr(0)))
+                .append(ctx.getChild(1).getText())
+                .append(visit(ctx.expr(1)));
+
+        return multExpr.toString();
+    }
+
+    @Override
+    public String visitAddiExpr(OFPParser.AddiExprContext ctx) {
+        StringBuilder addiExpr = new StringBuilder();
+
+        addiExpr.append(visit(ctx.expr(0)))
+                .append(" ")
+                .append(ctx.getChild(1).getText())
+                .append(" ")
+                .append(visit(ctx.expr(1)));
+
+        return addiExpr.toString();
+    }
+
+    @Override
+    public String visitRelExpr(OFPParser.RelExprContext ctx) {
+        StringBuilder relationalExpr = new StringBuilder();
+
+        relationalExpr.append(visit(ctx.expr(0)))
+                .append(" ")
+                .append(ctx.getChild(1).getText())
+                .append(" ")
+                .append(visit(ctx.expr(1)));
+
+        return relationalExpr.toString();
+    }
+
+    @Override
+    public String visitEqExpr(OFPParser.EqExprContext ctx) {
+        StringBuilder equalityExpr = new StringBuilder();
+
+        equalityExpr.append(visit(ctx.expr(0)))
+                .append(" ")
+                .append(ctx.getChild(1).getText())
+                .append(" ")
+                .append(visit(ctx.expr(1)));
+
+        return equalityExpr.toString();
+    }
+
+    @Override
+    public String visitIntExpr(OFPParser.IntExprContext ctx) {
+        return ctx.INT().getText();
+    }
+
+    @Override
+    public String visitFloatExpr(OFPParser.FloatExprContext ctx) {
+        return ctx.FLOAT().getText();
+    }
+
+    @Override
+    public String visitBoolExpr(OFPParser.BoolExprContext ctx) {
+        if ("true".equals(ctx.BOOLEAN().getText())) {
+            return "True";
+        } else {
+            return "False";
+        }
+    }
+
+    @Override
+    public String visitCharExpr(OFPParser.CharExprContext ctx) {
+        return ctx.CHAR().getText();
+    }
+
+    @Override
+    public String visitStringExpr(OFPParser.StringExprContext ctx) {
+        return ctx.STRING().getText();
+    }
+
+    @Override
+    public String visitIDExpr(OFPParser.IDExprContext ctx) {
+        return getSafeId(ctx.ID().getText());
+    }
+
+    private String indent() {
+        return " ".repeat(depth * 2);
+    }
+
+    private static String getSafeId(String id) {
+        if (reservedIds.contains(id)) {
+            return "ofp_" + id;
+        }
+        return id;
     }
 }
