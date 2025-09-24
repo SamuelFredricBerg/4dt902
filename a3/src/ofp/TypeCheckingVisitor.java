@@ -8,15 +8,22 @@ import generated.OFPParser;
 public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     private ParseTreeProperty<Scope> scopes;
     private Scope currentScope;
+    private Scope globalScope;
 
-    public TypeCheckingVisitor(ParseTreeProperty<Scope> scopes) {
+    public TypeCheckingVisitor(ParseTreeProperty<Scope> scopes, Scope globalScope) {
         this.scopes = scopes;
+        this.globalScope = globalScope;
     }
 
     @Override
     public OFPType visitFuncCall(OFPParser.FuncCallContext ctx) {
         String functionName = ctx.ID().getText();
-        Symbol functionSymbol = currentScope.resolve(functionName);
+        Symbol functionSymbol;
+
+        if (globalScope.getSymbols().get(functionName) != null)
+            functionSymbol = globalScope.resolve(functionName);
+        else
+            functionSymbol = currentScope.resolve(functionName);
 
         if (functionSymbol == null || !(functionSymbol instanceof FunctionSymbol)) {
             System.err.println("Error: Function '" + functionName + "' is not declared.");

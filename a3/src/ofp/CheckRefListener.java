@@ -41,7 +41,12 @@ public class CheckRefListener extends OFPBaseListener {
     @Override
     public void enterFuncCall(OFPParser.FuncCallContext ctx) {
         String functionName = ctx.ID().getText();
-        Symbol functionSymbol = currentScope.resolve(functionName);
+        Symbol functionSymbol;
+
+        if (globalScope.getSymbols().get(functionName) != null)
+            functionSymbol = globalScope.resolve(functionName);
+        else
+            functionSymbol = currentScope.resolve(functionName);
 
         if (functionSymbol == null || !(functionSymbol instanceof FunctionSymbol)) {
             System.err.println("Error: Function '" + functionName + "' is not declared.");

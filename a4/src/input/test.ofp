@@ -14,8 +14,10 @@ int funcA(int paramA) {
       }
 }
 
-float funcA(int paramA) {
+float funcC(int paramA) {
+    int funcC;
 
+    float foo = funcC(1);
 }
 
 int funcB(int paramB, int paramB) {

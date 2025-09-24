@@ -29,7 +29,7 @@ public class Main extends ClassLoader implements Opcodes {
 
     // Select test program
     String inputDir = "/home/fred/Documents/4dt902/a4/src/input/";
-    String testFile = "float"; // Change test file here
+    String testFile = "test"; // Change test file here
     String testProgram = testFile + ".ofp";
     String outputDir = "/home/fred/Documents/4dt902/a4/src/output/";
 
@@ -79,7 +79,7 @@ public class Main extends ClassLoader implements Opcodes {
 
     // Type checking
     System.out.println("===== Type Checking Errors =====");
-    TypeCheckingVisitor tcVisitor = new TypeCheckingVisitor(scopes);
+    TypeCheckingVisitor tcVisitor = new TypeCheckingVisitor(scopes, stListener.getGlobalScope());
     tcVisitor.visit(root);
 
     // Python Genertion

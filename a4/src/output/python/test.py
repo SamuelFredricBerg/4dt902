@@ -1,5 +1,15 @@
-n = 14.17
-pi = 314
-x = 1.22 + 7
-iArr = [1, 2, 3, 4, 5, 6, 7.5]
-fArr = [1.2, 2.4, 3.6, 4.8, 6]
+def funcA(paramA):
+    paramA = None
+    foo = 42
+    foo = None
+    funcA = None
+    if paramA > 0:
+        foo = None
+
+def funcC(paramA):
+    funcC = None
+    foo = funcC(1)
+
+def funcB(paramB):
+
+funcA(1)
