@@ -13,7 +13,6 @@ public class SymbolTableListener extends OFPBaseListener {
 
     @Override
     public void enterProgram(OFPParser.ProgramContext ctx) {
-        // Initialize global scope
         globalScope = new Scope(null);
         currentScope = globalScope;
         scopes.put(ctx, globalScope);
@@ -165,12 +164,6 @@ public class SymbolTableListener extends OFPBaseListener {
 
     private void printScope(Scope scope, int indentLevel) {
         String indent = "    ".repeat(indentLevel);
-
-        // if (scope.getEnclosingScope() == null)
-        // System.out.println(indent + "Enclosing Scope: None (Global Scope)");
-        // else
-        // System.out.println(indent + "Enclosing Scope: " + scope.getEnclosingScope());
-
         System.out.println(indent + "Scope: " + scope);
 
         for (Symbol symbol : scope.getSymbols().values()) {
