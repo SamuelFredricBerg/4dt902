@@ -14,31 +14,6 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     }
 
     @Override
-    public OFPType visitIntExpr(OFPParser.IntExprContext ctx) {
-        return OFPType.INT;
-    }
-
-    @Override
-    public OFPType visitFloatExpr(OFPParser.FloatExprContext ctx) {
-        return OFPType.FLOAT;
-    }
-
-    @Override
-    public OFPType visitBoolExpr(OFPParser.BoolExprContext ctx) {
-        return OFPType.BOOLEAN;
-    }
-
-    @Override
-    public OFPType visitCharExpr(OFPParser.CharExprContext ctx) {
-        return OFPType.CHAR;
-    }
-
-    @Override
-    public OFPType visitStringExpr(OFPParser.StringExprContext ctx) {
-        return OFPType.STRING;
-    }
-
-    @Override
     public OFPType visitFuncCall(OFPParser.FuncCallContext ctx) {
         String functionName = ctx.ID().getText();
         Symbol functionSymbol = currentScope.resolve(functionName);
@@ -75,45 +50,89 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     }
 
     @Override
-    public OFPType visitReturnStmt(OFPParser.ReturnStmtContext ctx) {
-        Scope returnScope = scopes.get(ctx);
-
-        if (returnScope == null) {
-            System.err.println("Error: 'return' statement is outside of a valid scope.");
-            return OFPType.ERROR;
-        }
-
-        FunctionSymbol currentFunction = returnScope.getEnclosingScope().getFunctionSymbol();
-
-        if (currentFunction.getReturnType().equals(OFPType.VOID)) {
-            if (ctx.expr() != null) {
-                System.err.println("Error: Cannot return a value from a void function.");
-                return OFPType.ERROR;
-            }
-        } else {
-            if (ctx.expr() == null) {
-                System.err.println("Error: Function '" + currentFunction.getName() + "' requires a return value.");
-                return OFPType.ERROR;
-            }
-
-            OFPType returnType = visit(ctx.expr());
-
-            if (!returnType.equals(currentFunction.getReturnType())) {
-                System.err.println("Error: Return type mismatch in function '" + currentFunction.getName()
-                        + "'. Expected '" + currentFunction.getReturnType() + "' but got '" + returnType + "'.");
-                return OFPType.ERROR;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
     public OFPType visitBlock(OFPParser.BlockContext ctx) {
         currentScope = scopes.get(ctx);
         super.visitBlock(ctx);
         currentScope = currentScope.getEnclosingScope();
         return null;
+    }
+
+    @Override
+    public OFPType visitPrintStmt(OFPParser.PrintStmtContext ctx) {
+        if (ctx.expr() != null) {
+            OFPType exprType = visit(ctx.expr());
+            if (exprType == null) {
+                System.err.println("Error: Invalid type in print statement.");
+                return OFPType.ERROR;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public OFPType visitAssignStmt(OFPParser.AssignStmtContext ctx) {
+        String varName = ctx.ID().getText();
+        Symbol varSymbol = currentScope.resolve(varName);
+
+        if (ctx.expr(1) == null) {
+            // NormalAssign
+            OFPType exprType = visit(ctx.expr(0));
+
+            if (exprType != null && exprType.equals(OFPType.VOID)) {
+                System.err.println("Error: Cannot assign the result of a void function.");
+                return OFPType.ERROR;
+            }
+
+            if (varSymbol == null) {
+                System.err.println("Error: Variable '" + varName + "' not declared.");
+                return OFPType.ERROR;
+            }
+
+            OFPType varType = varSymbol.getType();
+
+            if ((varType.equals(OFPType.INT_ARRAY) || varType.equals(OFPType.FLOAT_ARRAY)
+                    || varType.equals(OFPType.CHAR_ARRAY))
+                    && (exprType.equals(OFPType.INT_ARRAY) || exprType.equals(OFPType.FLOAT_ARRAY)
+                            || exprType.equals(OFPType.CHAR_ARRAY))) {
+
+                if (!varType.equals(exprType)) {
+                    System.err.println("Error: Type mismatch in array assignment. Expected '" + varType + "' but got '"
+                            + exprType + "'.");
+                    return OFPType.ERROR;
+                }
+            } else if (!varType.equals(exprType)) {
+                System.err.println(
+                        "Error: Type mismatch in assignment. Expected '" + varType + "' but got '" + exprType + "'.");
+                return OFPType.ERROR;
+            }
+
+            return exprType;
+        } else {
+            // ArrayAssign
+            OFPType indexType = visit(ctx.expr(0));
+            OFPType exprType = visit(ctx.expr(1));
+
+            if (!indexType.equals(OFPType.INT)) {
+                System.err.println("Error: Array index must be of type int.");
+            }
+
+            if (varSymbol == null) {
+                System.err.println("Error: Array '" + varName + "' not declared.");
+                return OFPType.ERROR;
+            }
+
+            OFPType arrayType = varSymbol.getType();
+
+            if (arrayType.equals(OFPType.INT_ARRAY) && !exprType.equals(OFPType.INT)) {
+                System.err.println("Error: Cannot assign non-int to int array.");
+            } else if (arrayType.equals(OFPType.FLOAT_ARRAY) && !exprType.equals(OFPType.FLOAT)) {
+                System.err.println("Error: Cannot assign non-float to float array.");
+            } else if (arrayType.equals(OFPType.CHAR_ARRAY) && !exprType.equals(OFPType.CHAR)) {
+                System.err.println("Error: Cannot assign non-char to char array.");
+            }
+
+            return null;
+        }
     }
 
     @Override
@@ -154,84 +173,6 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     }
 
     @Override
-    public OFPType visitAssignStmt(OFPParser.AssignStmtContext ctx) {
-        String varName = ctx.ID().getText();
-        Symbol varSymbol = currentScope.resolve(varName);
-        if (ctx.expr(1) == null) {
-            OFPType exprType = visit(ctx.expr(0)); // type assigned value
-
-            // NormalAssign
-            if (exprType != null && exprType.equals(OFPType.VOID)) {
-                System.err.println("Error: Cannot assign the result of a void function.");
-                return OFPType.ERROR;
-            }
-
-            if (varSymbol == null) {
-                System.err.println("Error: Variable '" + varName + "' not declared.");
-                return OFPType.ERROR;
-            }
-
-            OFPType varType = varSymbol.getType();
-
-            if ((varType.equals(OFPType.INT_ARRAY) || varType.equals(OFPType.FLOAT_ARRAY)
-                    || varType.equals(OFPType.CHAR_ARRAY))
-                    && (exprType.equals(OFPType.INT_ARRAY) || exprType.equals(OFPType.FLOAT_ARRAY)
-                            || exprType.equals(OFPType.CHAR_ARRAY))) {
-
-                // Check if array types match
-                if (!varType.equals(exprType)) {
-                    System.err.println("Error: Type mismatch in array assignment. Expected '" + varType + "' but got '"
-                            + exprType + "'.");
-                    return OFPType.ERROR;
-                }
-            } else if (!varType.equals(exprType)) {
-                System.err.println(
-                        "Error: Type mismatch in assignment. Expected '" + varType + "' but got '" + exprType + "'.");
-                return OFPType.ERROR;
-            }
-
-            return exprType;
-        } else {
-            // ArrayAssign
-            OFPType indexType = visit(ctx.expr(0)); // Check the array index
-            OFPType exprType = visit(ctx.expr(1)); // type assigned value
-
-            if (!indexType.equals(OFPType.INT)) {
-                System.err.println("Error: Array index must be of type int.");
-            }
-
-            if (varSymbol == null) {
-                System.err.println("Error: Array '" + varName + "' not declared.");
-                return OFPType.ERROR;
-            }
-
-            OFPType arrayType = varSymbol.getType();
-
-            if (arrayType.equals(OFPType.INT_ARRAY) && !exprType.equals(OFPType.INT)) {
-                System.err.println("Error: Cannot assign non-int to int array.");
-            } else if (arrayType.equals(OFPType.FLOAT_ARRAY) && !exprType.equals(OFPType.FLOAT)) {
-                System.err.println("Error: Cannot assign non-float to float array.");
-            } else if (arrayType.equals(OFPType.CHAR_ARRAY) && !exprType.equals(OFPType.CHAR)) {
-                System.err.println("Error: Cannot assign non-char to char array.");
-            }
-
-            return null;
-        }
-    }
-
-    @Override
-    public OFPType visitPrintStmt(OFPParser.PrintStmtContext ctx) {
-        if (ctx.expr() != null) {
-            OFPType exprType = visit(ctx.expr());
-            if (exprType == null) {
-                System.err.println("Error: Invalid type in print statement.");
-                return OFPType.ERROR;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public OFPType visitIfStmt(OFPParser.IfStmtContext ctx) {
         OFPType conditionType = visit(ctx.expr());
         if (!conditionType.equals(OFPType.BOOLEAN)) {
@@ -249,6 +190,40 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
             return OFPType.ERROR;
         }
         return super.visitWhileStmt(ctx);
+    }
+
+    @Override
+    public OFPType visitReturnStmt(OFPParser.ReturnStmtContext ctx) {
+        Scope returnScope = scopes.get(ctx);
+
+        if (returnScope == null) {
+            System.err.println("Error: 'return' statement is outside of a valid scope.");
+            return OFPType.ERROR;
+        }
+
+        FunctionSymbol currentFunction = returnScope.getEnclosingScope().getFunctionSymbol();
+
+        if (currentFunction.getReturnType().equals(OFPType.VOID)) {
+            if (ctx.expr() != null) {
+                System.err.println("Error: Cannot return a value from a void function.");
+                return OFPType.ERROR;
+            }
+        } else {
+            if (ctx.expr() == null) {
+                System.err.println("Error: Function '" + currentFunction.getName() + "' requires a return value.");
+                return OFPType.ERROR;
+            }
+
+            OFPType returnType = visit(ctx.expr());
+
+            if (!returnType.equals(currentFunction.getReturnType())) {
+                System.err.println("Error: Return type mismatch in function '" + currentFunction.getName()
+                        + "'. Expected '" + currentFunction.getReturnType() + "' but got '" + returnType + "'.");
+                return OFPType.ERROR;
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -272,7 +247,7 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
 
             return arrayType;
         } else {
-            // Handle { expr, ... }
+            // Handle { expr, (expr*)? }
             OFPType firstExprType = visit(ctx.expr(0));
 
             for (int i = 1; i < ctx.expr().size(); i++) {
@@ -331,7 +306,7 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
             return OFPType.CHAR;
         }
 
-        return null; // should not be reached
+        throw new IllegalStateException("Unexpected array type: " + varType);
     }
 
     @Override
@@ -353,6 +328,11 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     }
 
     @Override
+    public OFPType visitParenExpr(OFPParser.ParenExprContext ctx) {
+        return visit(ctx.expr());
+    }
+
+    @Override
     public OFPType visitUnaryExpr(OFPParser.UnaryExprContext ctx) {
         OFPType exprType = visit(ctx.expr());
         if (!exprType.equals(OFPType.INT) && !exprType.equals(OFPType.FLOAT)) {
@@ -360,10 +340,6 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
             return OFPType.ERROR;
         }
         return exprType;
-    }
-
-    public OFPType visitParenExpr(OFPParser.ParenExprContext ctx) {
-        return visit(ctx.expr());
     }
 
     @Override
@@ -497,6 +473,31 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         }
 
         return OFPType.BOOLEAN;
+    }
+
+    @Override
+    public OFPType visitIntExpr(OFPParser.IntExprContext ctx) {
+        return OFPType.INT;
+    }
+
+    @Override
+    public OFPType visitFloatExpr(OFPParser.FloatExprContext ctx) {
+        return OFPType.FLOAT;
+    }
+
+    @Override
+    public OFPType visitBoolExpr(OFPParser.BoolExprContext ctx) {
+        return OFPType.BOOLEAN;
+    }
+
+    @Override
+    public OFPType visitCharExpr(OFPParser.CharExprContext ctx) {
+        return OFPType.CHAR;
+    }
+
+    @Override
+    public OFPType visitStringExpr(OFPParser.StringExprContext ctx) {
+        return OFPType.STRING;
     }
 
     @Override

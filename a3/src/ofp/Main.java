@@ -1,6 +1,8 @@
 package ofp;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -15,28 +17,29 @@ import org.antlr.v4.gui.Trees;
 import generated.OFPLexer;
 import generated.OFPParser;
 
-public class Main {
+public class Main extends ClassLoader implements Opcodes {
 
     public static void main(String[] args) {
 
         // Select test program
-        String inputDir = "/home/fred/Documents/4dt902/a3/src/input/";
-        String testProgram = inputDir + "max.ofp";
-        String outputDir = "/home/fred/Documents/4dt902/a3/src/output/";
+        String inputDir = "/home/fred/Documents/4dt902/a4/src/input/";
+        String testFile = "max"; // Change test file here
+        String testProgram = testFile + ".ofp";
+        String outputDir = "/home/fred/Documents/4dt902/a4/src/output/";
 
         // Check if input ends with ".ofp"
         if (!testProgram.endsWith(".ofp")) {
-            System.out.println("\nPrograms most end with suffix .ofp! Found " + testProgram);
+            System.out.println("\nPrograms most end with suffix .ofp! Found " + inputDir + testProgram);
             System.exit(-1);
         }
-        System.out.println("Reading test program from: " + testProgram);
+        System.out.println("Reading test program from: " + inputDir + testProgram);
 
         // Parse input program
         System.out.println("\nParsing started");
         OFPParser parser = null;
         OFPParser.ProgramContext root = null;
         try {
-            CharStream inputStream = CharStreams.fromFileName(testProgram);
+            CharStream inputStream = CharStreams.fromFileName(inputDir + testProgram);
             OFPLexer lexer = new OFPLexer(inputStream);
             parser = new OFPParser(new BufferedTokenStream(lexer));
             root = parser.program();
@@ -76,9 +79,7 @@ public class Main {
         // Python Genertion
         System.out.println("\nGenerating Python code...");
 
-        String baseFileName = testProgram.substring(testProgram.lastIndexOf('/') + 1,
-                testProgram.lastIndexOf('.'));
-        String outputPythonFile = outputDir + baseFileName + ".py";
+        String outputPythonFile = outputDir + "python/" + testFile + ".py";
 
         PythonGenerator pythonCodeGenerator = new PythonGenerator(scopes);
         String generatedPythonCode = pythonCodeGenerator.visit(root);

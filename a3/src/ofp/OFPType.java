@@ -11,19 +11,16 @@ public class OFPType {
 
     public static final OFPType STRING = new OFPType("string");
 
+    public static final OFPType ARGS = new OFPType("String[]");
+
     public static final OFPType CHAR = new OFPType("char");
     public static final OFPType CHAR_ARRAY = new OFPType("char[]");
-
-    // Eventually, we will need to generate bytecode for Java main() method
-    public static final OFPType ARGS = new OFPType("String[]");
 
     public static final OFPType VOID = new OFPType("void");
 
     public static final OFPType ERROR = new OFPType("error");
 
     public static OFPType getTypeFor(String typeName) {
-        // typeName = typeName.strip();
-
         switch (typeName) {
             case "int":
                 return INT;
@@ -72,6 +69,6 @@ public class OFPType {
 
     @Override
     public String toString() {
-        return "OFPType: " + name;
+        return name;
     }
 }
