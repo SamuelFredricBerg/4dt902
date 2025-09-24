@@ -55,6 +55,21 @@ public class Scope {
             return null;
     }
 
+    public Symbol paramLocalResolve(String name) {
+        Symbol sym = symbols.get(name);
+        if (sym != null)
+            return sym;
+        else if (enclosingScope != null && enclosingScope.getFunctionSymbol() != null) {
+            for (Symbol param : enclosingScope.getFunctionSymbol().getParameters()) {
+                if (param.getName().equals(name)) {
+                    return param;
+                }
+            }
+            return null;
+        } else
+            return null;
+    }
+
     public Symbol localResolve(String name) {
         Symbol sym = symbols.get(name);
         if (sym != null)

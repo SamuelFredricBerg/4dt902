@@ -95,7 +95,7 @@ public class SymbolTableListener extends OFPBaseListener {
         String varName = ctx.ID().getText();
         OFPType varType = OFPType.getTypeFor(ctx.TYPE().getText());
 
-        Symbol existingSymbol = currentScope.localResolve(varName);
+        Symbol existingSymbol = currentScope.paramLocalResolve(varName);
         if (existingSymbol != null && !(existingSymbol instanceof FunctionSymbol)) {
             System.err.println("Error: Variable '" + varName + "' is already declared within this scope.");
             return;
