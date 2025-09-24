@@ -4,3 +4,6 @@ ANTLR_Exercise.pdf
 generated/
 .vscode/
 *.class
+test.py
+test.class
+!bytecode/*.class
