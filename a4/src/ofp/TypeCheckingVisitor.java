@@ -5,16 +5,32 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import generated.OFPBaseVisitor;
 import generated.OFPParser;
 
+/**
+ * Visitor for type checking expressions and statements in the OFP language.
+ * Reports type errors and ensures semantic correctness during traversal.
+ */
 public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     private ParseTreeProperty<Scope> scopes;
     private Scope currentScope;
     private Scope globalScope;
 
+    /**
+     * Constructs a TypeCheckingVisitor with the given scopes and global scope.
+     * 
+     * @param scopes      the mapping of parse tree nodes to scopes
+     * @param globalScope the global scope
+     */
     public TypeCheckingVisitor(ParseTreeProperty<Scope> scopes, Scope globalScope) {
         this.scopes = scopes;
         this.globalScope = globalScope;
     }
 
+    /**
+     * Checks type correctness for function calls.
+     * 
+     * @param ctx the function call context
+     * @return the return type of the function, or error type if invalid
+     */
     @Override
     public OFPType visitFuncCall(OFPParser.FuncCallContext ctx) {
         String functionName = ctx.ID().getText();
@@ -56,6 +72,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return funcSym.getReturnType();
     }
 
+    /**
+     * Updates the current scope when visiting a block.
+     * 
+     * @param ctx the block context
+     * @return null
+     */
     @Override
     public OFPType visitBlock(OFPParser.BlockContext ctx) {
         currentScope = scopes.get(ctx);
@@ -64,6 +86,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return null;
     }
 
+    /**
+     * Checks type correctness for print statements.
+     * 
+     * @param ctx the print statement context
+     * @return null or error type if invalid
+     */
     @Override
     public OFPType visitPrintStmt(OFPParser.PrintStmtContext ctx) {
         if (ctx.expr() != null) {
@@ -76,6 +104,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return null;
     }
 
+    /**
+     * Checks type correctness for assignment statements.
+     * 
+     * @param ctx the assignment statement context
+     * @return the assigned type or error type if invalid
+     */
     @Override
     public OFPType visitAssignStmt(OFPParser.AssignStmtContext ctx) {
         String varName = ctx.ID().getText();
@@ -142,6 +176,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         }
     }
 
+    /**
+     * Checks type correctness for variable declaration statements.
+     * 
+     * @param ctx the variable declaration statement context
+     * @return the variable type or error type if invalid
+     */
     @Override
     public OFPType visitVarDeclStmt(OFPParser.VarDeclStmtContext ctx) {
         String varName = ctx.ID().getText();
@@ -179,6 +219,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return varType;
     }
 
+    /**
+     * Checks type correctness for if statements.
+     * 
+     * @param ctx the if statement context
+     * @return error type if condition is not boolean
+     */
     @Override
     public OFPType visitIfStmt(OFPParser.IfStmtContext ctx) {
         OFPType conditionType = visit(ctx.expr());
@@ -189,6 +235,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return super.visitIfStmt(ctx);
     }
 
+    /**
+     * Checks type correctness for while statements.
+     * 
+     * @param ctx the while statement context
+     * @return error type if condition is not boolean
+     */
     @Override
     public OFPType visitWhileStmt(OFPParser.WhileStmtContext ctx) {
         OFPType conditionType = visit(ctx.expr());
@@ -199,6 +251,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return super.visitWhileStmt(ctx);
     }
 
+    /**
+     * Checks type correctness for return statements.
+     * 
+     * @param ctx the return statement context
+     * @return error type if return value does not match function return type
+     */
     @Override
     public OFPType visitReturnStmt(OFPParser.ReturnStmtContext ctx) {
         Scope returnScope = scopes.get(ctx);
@@ -233,6 +291,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return null;
     }
 
+    /**
+     * Checks type correctness for array initialization expressions.
+     * 
+     * @param ctx the array initialization expression context
+     * @return the array type or error type if invalid
+     */
     @Override
     public OFPType visitArrayInitExpr(OFPParser.ArrayInitExprContext ctx) {
         if (ctx.getChild(0).getText().equals("new")) {
@@ -278,6 +342,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         }
     }
 
+    /**
+     * Checks type correctness for array access expressions.
+     * 
+     * @param ctx the array access expression context
+     * @return the element type or error type if invalid
+     */
     @Override
     public OFPType visitArrayAccessExpr(OFPParser.ArrayAccessExprContext ctx) {
         String varName = ctx.ID().getText();
@@ -316,6 +386,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         throw new IllegalStateException("Unexpected array type: " + varType);
     }
 
+    /**
+     * Checks type correctness for array length expressions.
+     * 
+     * @param ctx the array length expression context
+     * @return int type or error type if invalid
+     */
     @Override
     public OFPType visitArrayLengthExpr(OFPParser.ArrayLengthExprContext ctx) {
         OFPType exprType = visit(ctx.expr());
@@ -334,11 +410,23 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return OFPType.INT;
     }
 
+    /**
+     * Checks type correctness for parenthesized expressions.
+     * 
+     * @param ctx the parenthesized expression context
+     * @return the type of the inner expression
+     */
     @Override
     public OFPType visitParenExpr(OFPParser.ParenExprContext ctx) {
         return visit(ctx.expr());
     }
 
+    /**
+     * Checks type correctness for unary expressions.
+     * 
+     * @param ctx the unary expression context
+     * @return the type of the expression or error type if invalid
+     */
     @Override
     public OFPType visitUnaryExpr(OFPParser.UnaryExprContext ctx) {
         OFPType exprType = visit(ctx.expr());
@@ -349,6 +437,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return exprType;
     }
 
+    /**
+     * Checks type correctness for multiplication/division expressions.
+     * 
+     * @param ctx the multiplication/division expression context
+     * @return the type of the expression or error type if invalid
+     */
     @Override
     public OFPType visitMultExpr(OFPParser.MultExprContext ctx) {
         OFPType leftType = visit(ctx.expr(0));
@@ -378,6 +472,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return leftType;
     }
 
+    /**
+     * Checks type correctness for addition/subtraction expressions.
+     * 
+     * @param ctx the addition/subtraction expression context
+     * @return the type of the expression or error type if invalid
+     */
     @Override
     public OFPType visitAddiExpr(OFPParser.AddiExprContext ctx) {
         OFPType leftType = visit(ctx.expr(0));
@@ -406,6 +506,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return leftType;
     }
 
+    /**
+     * Checks type correctness for relational expressions.
+     * 
+     * @param ctx the relational expression context
+     * @return boolean type or error type if invalid
+     */
     @Override
     public OFPType visitRelExpr(OFPParser.RelExprContext ctx) {
         OFPType leftType = visit(ctx.expr(0));
@@ -444,6 +550,12 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return OFPType.BOOLEAN;
     }
 
+    /**
+     * Checks type correctness for equality expressions.
+     * 
+     * @param ctx the equality expression context
+     * @return boolean type or error type if invalid
+     */
     @Override
     public OFPType visitEqExpr(OFPParser.EqExprContext ctx) {
         OFPType leftType = visit(ctx.expr(0));
@@ -482,31 +594,67 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
         return OFPType.BOOLEAN;
     }
 
+    /**
+     * Returns int type for integer expressions.
+     * 
+     * @param ctx the integer expression context
+     * @return int type
+     */
     @Override
     public OFPType visitIntExpr(OFPParser.IntExprContext ctx) {
         return OFPType.INT;
     }
 
+    /**
+     * Returns float type for float expressions.
+     * 
+     * @param ctx the float expression context
+     * @return float type
+     */
     @Override
     public OFPType visitFloatExpr(OFPParser.FloatExprContext ctx) {
         return OFPType.FLOAT;
     }
 
+    /**
+     * Returns boolean type for boolean expressions.
+     * 
+     * @param ctx the boolean expression context
+     * @return boolean type
+     */
     @Override
     public OFPType visitBoolExpr(OFPParser.BoolExprContext ctx) {
         return OFPType.BOOLEAN;
     }
 
+    /**
+     * Returns char type for char expressions.
+     * 
+     * @param ctx the char expression context
+     * @return char type
+     */
     @Override
     public OFPType visitCharExpr(OFPParser.CharExprContext ctx) {
         return OFPType.CHAR;
     }
 
+    /**
+     * Returns string type for string expressions.
+     * 
+     * @param ctx the string expression context
+     * @return string type
+     */
     @Override
     public OFPType visitStringExpr(OFPParser.StringExprContext ctx) {
         return OFPType.STRING;
     }
 
+    /**
+     * Returns the type of a referenced variable.
+     * 
+     * @param ctx the ID expression context
+     * @return the variable type or error type if not declared
+     */
     @Override
     public OFPType visitIDExpr(OFPParser.IDExprContext ctx) {
         String varName = ctx.ID().getText();
