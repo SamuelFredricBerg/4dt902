@@ -14,6 +14,11 @@ import org.objectweb.asm.commons.Method;
 import generated.OFPBaseVisitor;
 import generated.OFPParser;
 
+/**
+ * Visitor that generates JVM bytecode from the OFP parse tree using ASM.
+ * Handles translation of OFP constructs to Java bytecode, including functions,
+ * variables, and control flow.
+ */
 public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
     private String fileName;
     private ClassWriter cw;
@@ -24,6 +29,14 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
     private FunctionSymbol currentFunctionSymbol;
     private int pointer;
 
+    /**
+     * Constructs a BytecodeGenerator with the given file name, scopes, and global
+     * scope.
+     * 
+     * @param fileName    the output class file name
+     * @param scopes      the mapping of parse tree nodes to scopes
+     * @param globalScope the global scope
+     */
     public BytecodeGenerator(String fileName, ParseTreeProperty<Scope> scopes, Scope globalScope) {
         this.fileName = fileName;
         this.scopes = scopes;
@@ -34,6 +47,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return cw;
     }
 
+    /**
+     * Generates bytecode for the program, including class and method definitions.
+     * 
+     * @param ctx the program context
+     * @return null
+     */
     @Override
     public Type visitProgram(OFPParser.ProgramContext ctx) {
         currentScope = scopes.get(ctx);
@@ -53,6 +72,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return null;
     }
 
+    /**
+     * Generates bytecode for the main function.
+     * 
+     * @param ctx the main context
+     * @return null
+     */
     @Override
     public Type visitMain(OFPParser.MainContext ctx) {
         currentFunctionSymbol = new FunctionSymbol("main", OFPType.VOID);
@@ -67,6 +92,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return null;
     }
 
+    /**
+     * Generates bytecode for a function declaration.
+     * 
+     * @param ctx the function declaration context
+     * @return null
+     */
     @Override
     public Type visitFuncDecl(OFPParser.FuncDeclContext ctx) {
         currentFunctionSymbol = (FunctionSymbol) globalScope.resolve(ctx.getChild(1).getText());
@@ -95,6 +126,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return null;
     }
 
+    /**
+     * Generates bytecode for a function call.
+     * 
+     * @param ctx the function call context
+     * @return the return type of the function
+     */
     @Override
     public Type visitFuncCall(OFPParser.FuncCallContext ctx) {
         String funcName = ctx.getChild(0).getText();
@@ -120,6 +157,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return stringTypeToType(returnType.toString());
     }
 
+    /**
+     * Generates bytecode for a block of statements.
+     * 
+     * @param ctx the block context
+     * @return null
+     */
     @Override
     public Type visitBlock(OFPParser.BlockContext ctx) {
         currentScope = scopes.get(ctx);
@@ -129,6 +172,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return null;
     }
 
+    /**
+     * Generates bytecode for print statements.
+     * 
+     * @param ctx the print statement context
+     * @return null
+     */
     @Override
     public Type visitPrintStmt(OFPParser.PrintStmtContext ctx) {
         mg.getStatic(Type.getType(System.class), "out", Type.getType(PrintStream.class));
@@ -154,6 +203,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return null;
     }
 
+    /**
+     * Generates bytecode for assignment statements.
+     * 
+     * @param ctx the assignment statement context
+     * @return the type of the assigned value
+     */
     @Override
     public Type visitAssignStmt(OFPParser.AssignStmtContext ctx) {
         Symbol varSymbol = currentScope.resolve(ctx.ID().getText());
@@ -190,6 +245,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         }
     }
 
+    /**
+     * Generates bytecode for variable declaration statements.
+     * 
+     * @param ctx the variable declaration statement context
+     * @return the type of the variable
+     */
     @Override
     public Type visitVarDeclStmt(OFPParser.VarDeclStmtContext ctx) {
         Symbol varSymbol = currentScope.resolve(ctx.ID().getText());
@@ -208,6 +269,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return varType;
     }
 
+    /**
+     * Generates bytecode for if statements.
+     * 
+     * @param ctx the if statement context
+     * @return null
+     */
     @Override
     public Type visitIfStmt(OFPParser.IfStmtContext ctx) {
         Label ifLabel = new Label();
@@ -228,6 +295,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return null;
     }
 
+    /**
+     * Generates bytecode for while statements.
+     * 
+     * @param ctx the while statement context
+     * @return null
+     */
     @Override
     public Type visitWhileStmt(OFPParser.WhileStmtContext ctx) {
         Label whileStartLabel = new Label();
@@ -246,6 +319,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return null;
     }
 
+    /**
+     * Generates bytecode for return statements.
+     * 
+     * @param ctx the return statement context
+     * @return the return type
+     */
     @Override
     public Type visitReturnStmt(OFPParser.ReturnStmtContext ctx) {
         Type returnType = visit(ctx.expr());
@@ -254,6 +333,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return returnType;
     }
 
+    /**
+     * Generates bytecode for array initialization expressions.
+     * 
+     * @param ctx the array initialization expression context
+     * @return the array type
+     */
     @Override
     public Type visitArrayInitExpr(OFPParser.ArrayInitExprContext ctx) {
         if (ctx.getChild(0).getText().equals("new")) {
@@ -307,6 +392,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         }
     }
 
+    /**
+     * Generates bytecode for array access expressions.
+     * 
+     * @param ctx the array access expression context
+     * @return the element type
+     */
     @Override
     public Type visitArrayAccessExpr(OFPParser.ArrayAccessExprContext ctx) {
         Symbol varSymbol = currentScope.resolve(ctx.ID().getText());
@@ -351,6 +442,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         }
     }
 
+    /**
+     * Generates bytecode for array length expressions.
+     * 
+     * @param ctx the array length expression context
+     * @return int type
+     */
     @Override
     public Type visitArrayLengthExpr(OFPParser.ArrayLengthExprContext ctx) {
         Type arrayType = visit(ctx.expr());
@@ -363,11 +460,23 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return Type.INT_TYPE;
     }
 
+    /**
+     * Generates bytecode for parenthesized expressions.
+     * 
+     * @param ctx the parenthesized expression context
+     * @return the type of the inner expression
+     */
     @Override
     public Type visitParenExpr(OFPParser.ParenExprContext ctx) {
         return visit(ctx.expr());
     }
 
+    /**
+     * Generates bytecode for unary expressions.
+     * 
+     * @param ctx the unary expression context
+     * @return the type of the expression
+     */
     @Override
     public Type visitUnaryExpr(OFPParser.UnaryExprContext ctx) {
         Type exprType = visit(ctx.expr());
@@ -376,6 +485,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return exprType;
     }
 
+    /**
+     * Generates bytecode for multiplication/division expressions.
+     * 
+     * @param ctx the multiplication/division expression context
+     * @return the type of the expression
+     */
     @Override
     public Type visitMultExpr(OFPParser.MultExprContext ctx) {
         Type leftType = visit(ctx.expr(0));
@@ -390,6 +505,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return leftType;
     }
 
+    /**
+     * Generates bytecode for addition/subtraction expressions.
+     * 
+     * @param ctx the addition/subtraction expression context
+     * @return the type of the expression
+     */
     @Override
     public Type visitAddiExpr(OFPParser.AddiExprContext ctx) {
         Type leftType = visit(ctx.expr(0));
@@ -403,6 +524,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return leftType;
     }
 
+    /**
+     * Generates bytecode for relational expressions.
+     * 
+     * @param ctx the relational expression context
+     * @return boolean type
+     */
     @Override
     public Type visitRelExpr(OFPParser.RelExprContext ctx) {
         Type leftType = visit(ctx.expr(0));
@@ -428,6 +555,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return Type.BOOLEAN_TYPE;
     }
 
+    /**
+     * Generates bytecode for equality expressions.
+     * 
+     * @param ctx the equality expression context
+     * @return boolean type
+     */
     @Override
     public Type visitEqExpr(OFPParser.EqExprContext ctx) {
         Type leftType = visit(ctx.expr(0));
@@ -449,6 +582,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return Type.BOOLEAN_TYPE;
     }
 
+    /**
+     * Generates bytecode for integer literals.
+     * 
+     * @param ctx the integer expression context
+     * @return int type
+     */
     @Override
     public Type visitIntExpr(OFPParser.IntExprContext ctx) {
         mg.push(Integer.parseInt(ctx.getText()));
@@ -456,6 +595,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return Type.INT_TYPE;
     }
 
+    /**
+     * Generates bytecode for float literals.
+     * 
+     * @param ctx the float expression context
+     * @return double type
+     */
     @Override
     public Type visitFloatExpr(OFPParser.FloatExprContext ctx) {
         mg.push(Double.parseDouble(ctx.getText()));
@@ -463,6 +608,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return Type.DOUBLE_TYPE;
     }
 
+    /**
+     * Generates bytecode for boolean literals.
+     * 
+     * @param ctx the boolean expression context
+     * @return boolean type
+     */
     @Override
     public Type visitBoolExpr(OFPParser.BoolExprContext ctx) {
         mg.push(Boolean.parseBoolean(ctx.getText()));
@@ -470,6 +621,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return Type.BOOLEAN_TYPE;
     }
 
+    /**
+     * Generates bytecode for char literals.
+     * 
+     * @param ctx the char expression context
+     * @return char type
+     */
     @Override
     public Type visitCharExpr(OFPParser.CharExprContext ctx) {
         mg.push(ctx.getText().charAt(1));
@@ -477,6 +634,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return Type.CHAR_TYPE;
     }
 
+    /**
+     * Generates bytecode for string literals.
+     * 
+     * @param ctx the string expression context
+     * @return string type
+     */
     @Override
     public Type visitStringExpr(OFPParser.StringExprContext ctx) {
         String str = ctx.getText().substring(1, ctx.getText().length() - 1);
@@ -485,6 +648,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return Type.getType("java.lang.String");
     }
 
+    /**
+     * Generates bytecode for variable references.
+     * 
+     * @param ctx the ID expression context
+     * @return the variable type
+     */
     @Override
     public Type visitIDExpr(OFPParser.IDExprContext ctx) {
         Symbol varSymbol = currentScope.resolve(ctx.ID().getText());
@@ -505,6 +674,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         return javaType;
     }
 
+    /**
+     * Converts an OFP type string to a Java type string for ASM.
+     * 
+     * @param ofpType the OFP type string
+     * @return the Java type string
+     */
     private String ofpTypeToJavaType(String ofpType) {
         switch (ofpType) {
             case "float":
@@ -521,6 +696,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         }
     }
 
+    /**
+     * Converts a type string to an ASM Type.
+     * 
+     * @param stringType the type string
+     * @return the ASM Type
+     */
     private Type stringTypeToType(String stringType) {
         switch (stringType) {
             case "void":
@@ -547,6 +728,12 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
         }
     }
 
+    /**
+     * Checks if a symbol is a function parameter.
+     * 
+     * @param varSymbol the symbol to check
+     * @return true if the symbol is a parameter, false otherwise
+     */
     private boolean isParameter(Symbol varSymbol) {
         boolean isParam = false;
         for (int i = 0; i < currentFunctionSymbol.getParameters().size(); i++) {
