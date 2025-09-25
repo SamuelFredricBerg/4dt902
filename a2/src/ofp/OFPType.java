@@ -1,5 +1,9 @@
 package ofp;
 
+/**
+ * Represents of the different types allowed in the OFP language.
+ * Provides constants for supported types and utility methods for type lookup.
+ */
 public class OFPType {
     public static final OFPType INT = new OFPType("int");
     public static final OFPType INT_ARRAY = new OFPType("int[]");
@@ -20,6 +24,12 @@ public class OFPType {
 
     public static final OFPType ERROR = new OFPType("error");
 
+    /**
+     * Returns the OFPType constant for the given type name.
+     * 
+     * @param typeName the name of the type
+     * @return the corresponding OFPType, or null if not found
+     */
     public static OFPType getTypeFor(String typeName) {
         switch (typeName) {
             case "int":
