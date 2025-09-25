@@ -1,0 +1,4 @@
+void main() {
+    string str = "Hello";
+    char c = 'A';
+}
