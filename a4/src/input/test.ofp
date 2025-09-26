@@ -1,25 +1,7 @@
 void main() {
     # Add input you want to test
-    funcA(1);
+    funcB(1);
 }
 
-int funcA(int paramA) {
-    float paramA; # Dupl. declaration - same scope as parameter declaration
-    int foo = 42;
-    int foo;
-
-    int funcA;
-    if (paramA > 0) {
-        int foo;
-      }
-}
-
-float funcC(int paramA) {
-    int funcC;
-
-    float foo = funcC(1);
-}
-
-int funcB(int paramB, int paramB) {
-
-}
+int funcB(int paramB)
+    return paramB;

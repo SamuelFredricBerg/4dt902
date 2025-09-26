@@ -237,7 +237,7 @@ public class SymbolTableListener extends OFPBaseListener {
         System.out.println(indent + "Scope: " + scope);
 
         for (Symbol symbol : scope.getSymbols().values()) {
-            System.out.println(indent + "  Symbol: " + symbol.getName() + " (Type: " + symbol.getType() + ")");
+            System.out.println(indent + "Symbol: " + symbol.getName() + " (Type: " + symbol.getType() + ")");
         }
 
         for (Scope childScope : scope.getChildScopes()) {
