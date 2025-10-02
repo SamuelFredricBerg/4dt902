@@ -1,7 +1,6 @@
-void main() {
-    # Add input you want to test
-    funcB(1);
-}
+void main()
+    int a = 0;
 
-int funcB(int paramB)
-    return paramB;
+void funcA ()
+    int a = 0;
+

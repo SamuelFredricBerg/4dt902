@@ -73,6 +73,20 @@ public class TypeCheckingVisitor extends OFPBaseVisitor<OFPType> {
     }
 
     /**
+     * Updates the current scope when visiting a function block.
+     *
+     * @param ctx the function block context
+     * @return null
+     */
+    @Override
+    public OFPType visitFuncBlock(OFPParser.FuncBlockContext ctx) {
+        currentScope = scopes.get(ctx);
+        super.visitFuncBlock(ctx);
+        currentScope = currentScope.getEnclosingScope();
+        return null;
+    }
+
+    /**
      * Updates the current scope when visiting a block.
      *
      * @param ctx the block context

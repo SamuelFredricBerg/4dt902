@@ -32,7 +32,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
     /**
      * Constructs a BytecodeGenerator with the given file name, scopes, and global
      * scope.
-     * 
+     *
      * @param fileName    the output class file name
      * @param scopes      the mapping of parse tree nodes to scopes
      * @param globalScope the global scope
@@ -49,7 +49,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for the program, including class and method definitions.
-     * 
+     *
      * @param ctx the program context
      * @return null
      */
@@ -74,7 +74,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for the main function.
-     * 
+     *
      * @param ctx the main context
      * @return null
      */
@@ -94,7 +94,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for a function declaration.
-     * 
+     *
      * @param ctx the function declaration context
      * @return null
      */
@@ -128,7 +128,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for a function call.
-     * 
+     *
      * @param ctx the function call context
      * @return the return type of the function
      */
@@ -158,8 +158,23 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
     }
 
     /**
+     * Generates bytecode for a function block of statements.
+     *
+     * @param ctx the function block context
+     * @return null
+     */
+    @Override
+    public Type visitFuncBlock(OFPParser.FuncBlockContext ctx) {
+        currentScope = scopes.get(ctx);
+        visitChildren(ctx);
+        currentScope = currentScope.getEnclosingScope();
+
+        return null;
+    }
+
+    /**
      * Generates bytecode for a block of statements.
-     * 
+     *
      * @param ctx the block context
      * @return null
      */
@@ -174,7 +189,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for print statements.
-     * 
+     *
      * @param ctx the print statement context
      * @return null
      */
@@ -205,7 +220,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for assignment statements.
-     * 
+     *
      * @param ctx the assignment statement context
      * @return the type of the assigned value
      */
@@ -247,7 +262,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for variable declaration statements.
-     * 
+     *
      * @param ctx the variable declaration statement context
      * @return the type of the variable
      */
@@ -271,7 +286,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for if statements.
-     * 
+     *
      * @param ctx the if statement context
      * @return null
      */
@@ -297,7 +312,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for while statements.
-     * 
+     *
      * @param ctx the while statement context
      * @return null
      */
@@ -321,7 +336,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for return statements.
-     * 
+     *
      * @param ctx the return statement context
      * @return the return type
      */
@@ -335,7 +350,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for array initialization expressions.
-     * 
+     *
      * @param ctx the array initialization expression context
      * @return the array type
      */
@@ -394,7 +409,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for array access expressions.
-     * 
+     *
      * @param ctx the array access expression context
      * @return the element type
      */
@@ -444,7 +459,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for array length expressions.
-     * 
+     *
      * @param ctx the array length expression context
      * @return int type
      */
@@ -462,7 +477,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for parenthesized expressions.
-     * 
+     *
      * @param ctx the parenthesized expression context
      * @return the type of the inner expression
      */
@@ -473,7 +488,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for unary expressions.
-     * 
+     *
      * @param ctx the unary expression context
      * @return the type of the expression
      */
@@ -487,7 +502,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for multiplication/division expressions.
-     * 
+     *
      * @param ctx the multiplication/division expression context
      * @return the type of the expression
      */
@@ -507,7 +522,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for addition/subtraction expressions.
-     * 
+     *
      * @param ctx the addition/subtraction expression context
      * @return the type of the expression
      */
@@ -526,7 +541,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for relational expressions.
-     * 
+     *
      * @param ctx the relational expression context
      * @return boolean type
      */
@@ -557,7 +572,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for equality expressions.
-     * 
+     *
      * @param ctx the equality expression context
      * @return boolean type
      */
@@ -584,7 +599,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for integer literals.
-     * 
+     *
      * @param ctx the integer expression context
      * @return int type
      */
@@ -597,7 +612,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for float literals.
-     * 
+     *
      * @param ctx the float expression context
      * @return double type
      */
@@ -610,7 +625,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for boolean literals.
-     * 
+     *
      * @param ctx the boolean expression context
      * @return boolean type
      */
@@ -623,7 +638,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for char literals.
-     * 
+     *
      * @param ctx the char expression context
      * @return char type
      */
@@ -636,7 +651,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for string literals.
-     * 
+     *
      * @param ctx the string expression context
      * @return string type
      */
@@ -650,7 +665,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Generates bytecode for variable references.
-     * 
+     *
      * @param ctx the ID expression context
      * @return the variable type
      */
@@ -676,7 +691,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Converts an OFP type string to a Java type string for ASM.
-     * 
+     *
      * @param ofpType the OFP type string
      * @return the Java type string
      */
@@ -698,7 +713,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Converts a type string to an ASM Type.
-     * 
+     *
      * @param stringType the type string
      * @return the ASM Type
      */
@@ -730,7 +745,7 @@ public class BytecodeGenerator extends OFPBaseVisitor<Type> implements Opcodes {
 
     /**
      * Checks if a symbol is a function parameter.
-     * 
+     *
      * @param varSymbol the symbol to check
      * @return true if the symbol is a parameter, false otherwise
      */
