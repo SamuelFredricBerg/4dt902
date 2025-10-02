@@ -145,13 +145,13 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
     }
 
     /**
-     * Generates Python code for a block of statements.
+     * Generates Python code for a funcBlock of statements.
      *
      * @param ctx the block context
-     * @return the generated Python code for the block
+     * @return the generated Python code for the funcBlock
      */
     @Override
-    public String visitBlock(OFPParser.BlockContext ctx) {
+    public String visitFuncBlock(OFPParser.FuncBlockContext ctx) {
         StringBuilder blockStmt = new StringBuilder();
 
         depth++;
@@ -171,13 +171,13 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
     }
 
     /**
-     * Generates Python code for a funcBlock of statements.
+     * Generates Python code for a block of statements.
      *
      * @param ctx the block context
-     * @return the generated Python code for the funcBlock
+     * @return the generated Python code for the block
      */
     @Override
-    public String visitFuncBlock(OFPParser.FuncBlockContext ctx) {
+    public String visitBlock(OFPParser.BlockContext ctx) {
         StringBuilder blockStmt = new StringBuilder();
 
         depth++;
