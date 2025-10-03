@@ -71,7 +71,7 @@ public class SymbolTableListener extends OFPBaseListener {
         String returnTypeStr = ctx.getChild(0).getText();
         OFPType returnType = OFPType.getTypeFor(returnTypeStr);
 
-        if (!(ctx.getChild(ctx.getChildCount() - 1) instanceof OFPParser.BlockContext)) {
+        if (!(ctx.getChild(ctx.getChildCount() - 1) instanceof OFPParser.FuncBlockContext)) {
             System.err.println("Error: Invalid function declaration for '" + functionName
                     + "'. Expected a function body enclosed in '{ }'.");
             return;
@@ -141,6 +141,36 @@ public class SymbolTableListener extends OFPBaseListener {
         Symbol varSymbol = new Symbol(varName, varType);
 
         currentScope.define(varSymbol);
+    }
+
+    /**
+     * Handles entering a function block, creating a new scope for the function
+     * block.
+     *
+     * @param ctx the function block context
+     */
+    @Override
+    public void enterFuncBlock(OFPParser.FuncBlockContext ctx) {
+        Scope blockScope = new Scope(currentScope);
+        if (currentScope.getFunctionSymbol() != null) {
+            blockScope.setFunctionSymbol(currentScope.getFunctionSymbol());
+        }
+
+        currentScope.addChildScope(blockScope);
+        currentScope = blockScope;
+        scopes.put(ctx, blockScope);
+    }
+
+    /**
+     * Handles exiting a function block, restoring the enclosing scope.
+     *
+     * @param ctx the function block context
+     */
+    @Override
+    public void exitFuncBlock(OFPParser.FuncBlockContext ctx) {
+        if (currentScope != globalScope) {
+            currentScope = currentScope.getEnclosingScope();
+        }
     }
 
     /**
@@ -237,7 +267,7 @@ public class SymbolTableListener extends OFPBaseListener {
         System.out.println(indent + "Scope: " + scope);
 
         for (Symbol symbol : scope.getSymbols().values()) {
-            System.out.println(indent + "  Symbol: " + symbol.getName() + " (Type: " + symbol.getType() + ")");
+            System.out.println(indent + "Symbol: " + symbol.getName() + " (Type: " + symbol.getType() + ")");
         }
 
         for (Scope childScope : scope.getChildScopes()) {

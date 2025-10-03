@@ -1,8 +1,6 @@
 package ofp;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -12,24 +10,18 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.util.CheckClassAdapter;
-import org.objectweb.asm.util.TraceClassVisitor;
 import org.antlr.v4.gui.Trees;
 
 import generated.OFPLexer;
 import generated.OFPParser;
 
-public class Main extends ClassLoader implements Opcodes {
+public class Main {
 
   public static void main(String[] args) {
 
     // Select test program
     String inputDir = "/home/fred/Documents/4dt902/a4/src/input/";
-    String testFile = "test"; // Change test file here
+    String testFile = "float"; // Change test file here
     String testProgram = testFile + ".ofp";
     String outputDir = "/home/fred/Documents/4dt902/a4/src/output/";
 

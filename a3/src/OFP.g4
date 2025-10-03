@@ -12,11 +12,11 @@ program
     ;
 
 main
-    : 'void' 'main' '(' ')' block
+    : 'void' 'main' '(' ')' funcBlock
     ;
 
 funcDecl
-    : (TYPE | 'void') ID '(' (TYPE ID (',' TYPE ID)*)? ')' block
+    : (TYPE | 'void') ID '(' (TYPE ID (',' TYPE ID)*)? ')' funcBlock
     ;
 
 funcCall
@@ -25,6 +25,10 @@ funcCall
 
 block
     : '{' stmt* '}' | stmt
+    ;
+
+funcBlock
+    : '{' stmt* '}'
     ;
 
 stmt

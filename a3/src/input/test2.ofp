@@ -1,0 +1,86 @@
+int[] selectionSort(int[] arr){
+	int i = 0;
+    while (i < arr.length - 1)  {
+        int smallest = i;
+        int j = i+1;
+        while (j < arr.length){
+            if (arr[j] < arr[smallest]){
+                smallest = j;    # searching for lowest index
+            }
+            j = j+1;
+        }
+        # Swap
+        int smallestNumber = arr[smallest];
+        arr[smallest] = arr[i];
+        arr[i] = smallestNumber;
+        i = i+1;
+    }
+    return arr;
+}
+
+int binarySearchRec(int[] arr, int low, int high, int target){
+    if (low > high) return -1;
+    int mid = (low + high) / 2;
+    if (arr[mid] == target){
+        return mid;
+    } else if(arr[mid] > target){
+        return binarySearchRec(arr, low, mid-1, target);
+    } else {
+        return binarySearchRec(arr, mid+1, high, target);
+    }
+}
+
+int binarySearch(int[] arr, int target){
+    int low = 0;
+    int high = (arr.length)-1;
+    int mid;
+    while (low < high){
+        mid = (low + high)/2;
+        if (arr[mid] == target){
+            return mid;
+        } else if (arr[mid] > target){
+            high = mid - 1;
+        } else {
+            low = mid +1;
+        }
+    }
+    return -1;
+}
+
+void main() {
+    int[] arr = {9,8,17,1,2,3, 4};
+    arr = selectionSort(arr);
+    int target = 10;
+    int posInt;
+    posInt = binarySearch(arr, target);
+    if (posInt == -1){
+        println("Target could not be found");
+    } else {
+        println("Target was found");
+    }
+
+    target = 4;
+    posInt = binarySearch(arr, target);
+
+    if (posInt == -1){
+        println("Target could not be found");
+    } else {
+        println("Target was found");
+    }
+
+        posInt = binarySearchRec(arr, target);
+    if (posInt == -1){
+        println("Target could not be found");
+    } else {
+        println("Target was found");
+    }
+
+    target = 4;
+    posInt = binarySearchRec(arr, target);
+
+    if (posInt == -1){
+        println("Target could not be found");
+    } else {
+        println("Target was found");
+    }
+}

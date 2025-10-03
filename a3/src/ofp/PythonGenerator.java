@@ -51,7 +51,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for the program.
-     * 
+     *
      * @param ctx the program context
      * @return the generated Python code
      */
@@ -72,7 +72,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for the main function.
-     * 
+     *
      * @param ctx the main context
      * @return the generated Python code for main
      */
@@ -81,7 +81,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
         int previousDepth = depth;
         depth = -1;
 
-        String mainStmt = visit(ctx.block());
+        String mainStmt = visit(ctx.funcBlock());
         depth = previousDepth;
 
         return mainStmt;
@@ -89,7 +89,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for a function declaration.
-     * 
+     *
      * @param ctx the function declaration context
      * @return the generated Python code for the function
      */
@@ -113,14 +113,14 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
             }
         }
 
-        functionDeclStmt.append("):\n" + visit(ctx.block()) + "\n");
+        functionDeclStmt.append("):\n" + visit(ctx.funcBlock()) + "\n");
 
         return functionDeclStmt.toString();
     }
 
     /**
      * Generates Python code for a function call.
-     * 
+     *
      * @param ctx the function call context
      * @return the generated Python code for the function call
      */
@@ -145,8 +145,34 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
     }
 
     /**
+     * Generates Python code for a funcBlock of statements.
+     *
+     * @param ctx the block context
+     * @return the generated Python code for the funcBlock
+     */
+    @Override
+    public String visitFuncBlock(OFPParser.FuncBlockContext ctx) {
+        StringBuilder blockStmt = new StringBuilder();
+
+        depth++;
+        if (ctx.stmt().isEmpty())
+            blockStmt.append(indent()).append("\tpass\n");
+        else {
+            for (int i = 0; i < ctx.getChildCount(); i++) {
+                String stmt = visit(ctx.getChild(i));
+                if (stmt != null && !stmt.isEmpty()) {
+                    blockStmt.append(indent()).append(stmt);
+                }
+            }
+        }
+        depth--;
+
+        return blockStmt.toString();
+    }
+
+    /**
      * Generates Python code for a block of statements.
-     * 
+     *
      * @param ctx the block context
      * @return the generated Python code for the block
      */
@@ -172,7 +198,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for print and println statements.
-     * 
+     *
      * @param ctx the print statement context
      * @return the generated Python code for the print statement
      */
@@ -205,7 +231,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for a function call statement.
-     * 
+     *
      * @param ctx the function call statement context
      * @return the generated Python code for the statement
      */
@@ -216,7 +242,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for an assignment statement.
-     * 
+     *
      * @param ctx the assignment statement context
      * @return the generated Python code for the assignment
      */
@@ -236,7 +262,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for a variable declaration statement.
-     * 
+     *
      * @param ctx the variable declaration statement context
      * @return the generated Python code for the declaration
      */
@@ -250,7 +276,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for an if statement (with optional elif/else).
-     * 
+     *
      * @param ctx the if statement context
      * @return the generated Python code for the if statement
      */
@@ -298,7 +324,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for a while statement.
-     * 
+     *
      * @param ctx the while statement context
      * @return the generated Python code for the while statement
      */
@@ -318,7 +344,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for a return statement.
-     * 
+     *
      * @param ctx the return statement context
      * @return the generated Python code for the return statement
      */
@@ -335,7 +361,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for array initialization expressions.
-     * 
+     *
      * @param ctx the array initialization expression context
      * @return the generated Python code for the array initialization
      */
@@ -362,7 +388,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for array access expressions.
-     * 
+     *
      * @param ctx the array access expression context
      * @return the generated Python code for the array access
      */
@@ -375,7 +401,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for array length expressions.
-     * 
+     *
      * @param ctx the array length expression context
      * @return the generated Python code for the length expression
      */
@@ -394,7 +420,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for parenthesized expressions.
-     * 
+     *
      * @param ctx the parenthesized expression context
      * @return the generated Python code for the expression
      */
@@ -411,7 +437,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for unary expressions.
-     * 
+     *
      * @param ctx the unary expression context
      * @return the generated Python code for the unary expression
      */
@@ -428,7 +454,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for multiplication/division expressions.
-     * 
+     *
      * @param ctx the multiplication/division expression context
      * @return the generated Python code for the expression
      */
@@ -445,7 +471,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for addition/subtraction expressions.
-     * 
+     *
      * @param ctx the addition/subtraction expression context
      * @return the generated Python code for the expression
      */
@@ -464,7 +490,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for relational expressions.
-     * 
+     *
      * @param ctx the relational expression context
      * @return the generated Python code for the expression
      */
@@ -483,7 +509,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Generates Python code for equality expressions.
-     * 
+     *
      * @param ctx the equality expression context
      * @return the generated Python code for the expression
      */
@@ -502,7 +528,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Returns the Python code for an integer literal.
-     * 
+     *
      * @param ctx the integer expression context
      * @return the integer literal as a string
      */
@@ -513,7 +539,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Returns the Python code for a float literal.
-     * 
+     *
      * @param ctx the float expression context
      * @return the float literal as a string
      */
@@ -524,7 +550,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Returns the Python code for a boolean literal.
-     * 
+     *
      * @param ctx the boolean expression context
      * @return the boolean literal as a string
      */
@@ -539,7 +565,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Returns the Python code for a char literal.
-     * 
+     *
      * @param ctx the char expression context
      * @return the char literal as a string
      */
@@ -550,7 +576,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Returns the Python code for a string literal.
-     * 
+     *
      * @param ctx the string expression context
      * @return the string literal as a string
      */
@@ -562,7 +588,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
     /**
      * Returns the Python code for a variable reference, handling reserved
      * identifiers.
-     * 
+     *
      * @param ctx the ID expression context
      * @return the variable name as a string
      */
@@ -573,7 +599,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Returns the current indentation string based on depth.
-     * 
+     *
      * @return the indentation string
      */
     private String indent() {
@@ -582,7 +608,7 @@ public class PythonGenerator extends OFPBaseVisitor<String> {
 
     /**
      * Returns a safe identifier for Python, prefixing reserved words.
-     * 
+     *
      * @param id the identifier to check
      * @return a safe identifier string
      */

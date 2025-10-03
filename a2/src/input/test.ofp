@@ -1,6 +1,6 @@
-void main() {
-    int[] a;
-    a = {1,2,3,4,5,6,7.1};
+void main()
+    int a = 0;
 
-    b = a;
-}
+void funcA ()
+    int a = 0;
+

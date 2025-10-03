@@ -1,3 +1,6 @@
-void main() {
-    # Add input you want to test
-}
+void main()
+    int a = 0;
+
+void funcA ()
+    int a = 0;
+

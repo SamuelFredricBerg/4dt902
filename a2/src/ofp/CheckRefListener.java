@@ -58,6 +58,26 @@ public class CheckRefListener extends OFPBaseListener {
     }
 
     /**
+     * Sets the current scope when entering a function block.
+     *
+     * @param ctx the function block context
+     */
+    @Override
+    public void enterFuncBlock(OFPParser.FuncBlockContext ctx) {
+        currentScope = scopes.get(ctx);
+    }
+
+    /**
+     * Restores the enclosing scope when exiting a function block.
+     *
+     * @param ctx the function block context
+     */
+    @Override
+    public void exitFuncBlock(OFPParser.FuncBlockContext ctx) {
+        currentScope = currentScope.getEnclosingScope();
+    }
+
+    /**
      * Sets the current scope when entering a block.
      *
      * @param ctx the block context
