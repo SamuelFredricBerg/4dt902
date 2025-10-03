@@ -16,8 +16,8 @@ public class Main {
     public static void main(String[] args) {
 
         // Select test program
-        String inputDir = "/home/fred/Documents/4dt902/a4/src/input/";
-        String testFile = "float"; // Change test file here
+        String inputDir = "/home/fred/Documents/4dt902/a2/src/input/";
+        String testFile = "while"; // Change test file here
         String testProgram = testFile + ".ofp";
 
         // Check if input ends with ".ofp"

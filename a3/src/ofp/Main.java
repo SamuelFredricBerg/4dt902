@@ -20,10 +20,10 @@ public class Main {
   public static void main(String[] args) {
 
     // Select test program
-    String inputDir = "/home/fred/Documents/4dt902/a4/src/input/";
+    String inputDir = "/home/fred/Documents/4dt902/a3/src/input/";
     String testFile = "float"; // Change test file here
     String testProgram = testFile + ".ofp";
-    String outputDir = "/home/fred/Documents/4dt902/a4/src/output/";
+    String outputDir = "/home/fred/Documents/4dt902/a3/src/output/";
 
     // Check if input ends with ".ofp"
     if (!testProgram.endsWith(".ofp")) {
