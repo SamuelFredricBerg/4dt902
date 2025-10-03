@@ -20,7 +20,7 @@ public class Main {
   public static void main(String[] args) {
 
     // Select test program
-    String inputDir = "/home/fred/Documents/4dt902/a3/src/input/";
+    String inputDir = "/home/fred/Documents/4dt902/input/";
     String testFile = "float"; // Change test file here
     String testProgram = testFile + ".ofp";
     String outputDir = "/home/fred/Documents/4dt902/a3/src/output/";
