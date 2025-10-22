@@ -2,11 +2,11 @@
 
 **Assignment 1 is individual. Each students should submit their own solution.**
 
-The goal of practical assignments 1–4  is to implement a compiler frontend and code generation for the One-file Programming language (OFP). We will not implement the lexical and syntax analysis from scratch. Instead we will use a parser generating tool named ANTLR.
+The goal of practical assignments 1–4 is to implement a compiler frontend and code generation for the One-file Programming language (OFP). We will not implement the lexical and syntax analysis from scratch. Instead we will use a parser generating tool named ANTLR.
 
 ## Using ANTLR
 
-ANTLR (ANother Tool for Language Recognition) is a parser generating tool that reads a grammar specification and converts it to a (Java) program that can recognize matches to the grammar. ANTLR is a LL(*) parser generator that can handle grammars with productions like:
+ANTLR (ANother Tool for Language Recognition) is a parser generating tool that reads a grammar specification and converts it to a (Java) program that can recognize matches to the grammar. ANTLR is a LL(\*) parser generator that can handle grammars with productions like:
 
 ```ANTLR4
 Expression : BoolExp (BoolOp BoolExp)* ;
@@ -24,9 +24,9 @@ We have put together a simple **ANTLR Start Kit** (see the attachment below) whe
 
 Besides this, there is plenty of information on ANTLR available on the Internet. However, the documentation available at the [ANTLR home page](http://www.antlr.org) should be sufficient to get you started.
 
-Also, we made a  video showing how to install and get started with ANTLR. They are a part of the Lecture 2 material. The video assume that we are using the VS Code IDE and that we have installed the corresponding ANTLR plugin. Alternatively, take a look at the ANTLR plugins for other IDEs listed at <https://www.antlr.org/tools.html> , or consider using ANTLR from command line in the worst case (make sure the ANTLR JAR file is on your Java class path, and follow the instructions from the official [Getting Started](https://github.com/antlr/antlr4/blob/master/doc/getting-started.md) guide). However, we recommend you to use VS Code as your IDE and this is the setup that we support.
+Also, we made a video showing how to install and get started with ANTLR. They are a part of the Lecture 2 material. The video assume that we are using the VS Code IDE and that we have installed the corresponding ANTLR plugin. Alternatively, take a look at the ANTLR plugins for other IDEs listed at <https://www.antlr.org/tools.html> , or consider using ANTLR from command line in the worst case (make sure the ANTLR JAR file is on your Java class path, and follow the instructions from the official [Getting Started](https://github.com/antlr/antlr4/blob/master/doc/getting-started.md) guide). However, we recommend you to use VS Code as your IDE and this is the setup that we support.
 
-**Finally, we strongly recommend you to play around with ANTLR for a while before starting to work on the actual assignment.  Make sure you can run the "PlusMult" example first, then the "Expressions" example. Handling the rest of exercises in the Start Kit tutorial is a good way to continue.**
+**Finally, we strongly recommend you to play around with ANTLR for a while before starting to work on the actual assignment. Make sure you can run the "PlusMult" example first, then the "Expressions" example. Handling the rest of exercises in the Start Kit tutorial is a good way to continue.**
 
 ## What is the One-file Program Language?
 
@@ -66,8 +66,8 @@ Before the given deadline for step 1 (23:59) you must upload your solution to Mo
 
 ### Attached Files
 
-* [OFP_Examples.zip](./ofp_examples.zip)
+- [OFP_Examples.zip](../ofp_examples.zip)
 
-* [ANTLR_Starter_Kit.zip](./ANTLR_kit.zip)
+- [ANTLR_Starter_Kit.zip](../ANTLR_kit.zip)
 
-* [One_File_Programs.pdf](./one_file_programs.pdf)
+- [One_File_Programs.pdf](./one_file_programs.pdf)
