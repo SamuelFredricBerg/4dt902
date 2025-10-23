@@ -7,3 +7,4 @@ generated/
 test.py
 test.class
 !bytecode/*.class
+help/
